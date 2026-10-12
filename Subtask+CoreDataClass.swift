@@ -12,6 +12,6 @@ public import CoreData
 public typealias SubtaskCoreDataClassSet = NSSet
 
 
-public class Subtask: NSManagedObject {
+public class SubtaskTodo: NSManagedObject {
 
 }

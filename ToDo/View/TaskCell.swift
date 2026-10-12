@@ -7,13 +7,15 @@
 import UIKit
 
 class TaskCell: UITableViewCell {
-
-    func configure(with task: String) {
-        var configuration = UIListContentConfiguration.subtitleCell()
-
-        configuration.text = task
+    
+    
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var dueDateLabel: UILabel!
+    
+    func configure(with task: TodoTask) {
+        nameLabel.text = task.name
+        dueDateLabel.text = task.dueDate.formatted(date: .abbreviated, time: .omitted)
         
-        contentConfiguration = configuration
     }
     
 }

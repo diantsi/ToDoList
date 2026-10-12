@@ -9,14 +9,36 @@ import UIKit
 
 class ViewController: UITableViewController {
     
-    private var tasks = [
+    var persistanceService: any PersistenceService!
+    private var tasks: [TodoTask] = []
+    
+    private var mytasks = [
         "Зробити лабораторну",
         "Прочитати документацію Core Data"
     ]
-
+    
     override func viewDidLoad() {
+        persistanceService = CoreDataService()
+        
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadTasks()
+    }
+    
+    private func loadTasks() {
+        do {
+            tasks = try persistanceService.fetchTasks()
+            tableView.reloadData()
+        } catch {
+            print("Failed to fetch tasks: \(error.localizedDescription)")
+        }
+    }
+    
+    
+    @IBAction func addTaskTapped(_ sender: UIBarButtonItem) {
     }
     
     
@@ -35,6 +57,25 @@ class ViewController: UITableViewController {
         return cell
     }
 
+    
+    override func prepare(
+        for segue: UIStoryboardSegue,
+        sender: Any?
+    ) {
+        guard segue.identifier == "ShowAddTask",
+              let navigationController =
+                segue.destination as? UINavigationController,
+              let addTaskVC =
+                navigationController.topViewController as? AddTaskViewController
+        else {
+            return
+        }
 
+        addTaskVC.persistenceService = persistanceService
+
+        addTaskVC.onTaskAdded = { [weak self] in
+            self?.loadTasks()
+        }
+    }
 }
 

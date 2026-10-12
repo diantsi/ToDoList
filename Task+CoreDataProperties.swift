@@ -12,10 +12,10 @@ public import CoreData
 
 public typealias TaskCoreDataPropertiesSet = NSSet
 
-extension Task {
+extension TaskTodo {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Task> {
-        return NSFetchRequest<Task>(entityName: "Task")
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<TaskTodo> {
+        return NSFetchRequest<TaskTodo>(entityName: "TaskTodo")
     }
 
     @NSManaged nonisolated public var dueDate: Date?
@@ -26,13 +26,13 @@ extension Task {
 }
 
 // MARK: Generated accessors for subtasks
-extension Task {
+extension TaskTodo {
 
     @objc(addSubtasksObject:)
-    @NSManaged nonisolated public func addToSubtasks(_ value: Subtask)
+    @NSManaged nonisolated public func addToSubtasks(_ value: SubtaskTodo)
 
     @objc(removeSubtasksObject:)
-    @NSManaged nonisolated public func removeFromSubtasks(_ value: Subtask)
+    @NSManaged nonisolated public func removeFromSubtasks(_ value: SubtaskTodo)
 
     @objc(addSubtasks:)
     @NSManaged nonisolated public func addToSubtasks(_ values: NSSet)
@@ -42,6 +42,6 @@ extension Task {
 
 }
 
-extension Task : Identifiable {
+extension TaskTodo : Identifiable {
 
 }

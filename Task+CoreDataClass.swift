@@ -12,6 +12,6 @@ public import CoreData
 public typealias TaskCoreDataClassSet = NSSet
 
 
-public class Task: NSManagedObject {
+public class TaskTodo: NSManagedObject {
 
 }

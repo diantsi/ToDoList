@@ -12,18 +12,18 @@ public import CoreData
 
 public typealias SubtaskCoreDataPropertiesSet = NSSet
 
-extension Subtask {
+extension SubtaskTodo {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Subtask> {
-        return NSFetchRequest<Subtask>(entityName: "Subtask")
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<SubtaskTodo> {
+        return NSFetchRequest<SubtaskTodo>(entityName: "SubtaskTodo")
     }
 
-    @NSManaged nonisolated public var name: String?
     @NSManaged nonisolated public var isDone: Bool
-    @NSManaged nonisolated public var task: Task?
+    @NSManaged nonisolated public var name: String?
+    @NSManaged nonisolated public var task: TaskTodo?
 
 }
 
-extension Subtask : Identifiable {
+extension SubtaskTodo : Identifiable {
 
 }

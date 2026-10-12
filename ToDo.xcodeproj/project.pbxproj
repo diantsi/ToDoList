@@ -7,14 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9A4E0A9630762F5800F36AB0 /* Todo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A4E0A9530762F5800F36AB0 /* Todo+CoreDataProperties.swift */; };
-		9A4E0A9730762F5800F36AB0 /* Todo+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A4E0A9430762F5800F36AB0 /* Todo+CoreDataClass.swift */; };
+		9AF6CEC6307D5655003CBA4A /* Subtask+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF6CEC3307D5655003CBA4A /* Subtask+CoreDataProperties.swift */; };
+		9AF6CEC7307D5655003CBA4A /* Task+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF6CEC5307D5655003CBA4A /* Task+CoreDataProperties.swift */; };
+		9AF6CEC8307D5655003CBA4A /* Subtask+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF6CEC2307D5655003CBA4A /* Subtask+CoreDataClass.swift */; };
+		9AF6CEC9307D5655003CBA4A /* Task+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF6CEC4307D5655003CBA4A /* Task+CoreDataClass.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9A4E0A7930762E1600F36AB0 /* ToDo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		9A4E0A9430762F5800F36AB0 /* Todo+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Todo+CoreDataClass.swift"; sourceTree = "<group>"; };
-		9A4E0A9530762F5800F36AB0 /* Todo+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Todo+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		9AF6CEC2307D5655003CBA4A /* Subtask+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Subtask+CoreDataClass.swift"; sourceTree = "<group>"; };
+		9AF6CEC3307D5655003CBA4A /* Subtask+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Subtask+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		9AF6CEC4307D5655003CBA4A /* Task+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+CoreDataClass.swift"; sourceTree = "<group>"; };
+		9AF6CEC5307D5655003CBA4A /* Task+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -50,8 +54,10 @@
 		9A4E0A7030762E1600F36AB0 = {
 			isa = PBXGroup;
 			children = (
-				9A4E0A9430762F5800F36AB0 /* Todo+CoreDataClass.swift */,
-				9A4E0A9530762F5800F36AB0 /* Todo+CoreDataProperties.swift */,
+				9AF6CEC2307D5655003CBA4A /* Subtask+CoreDataClass.swift */,
+				9AF6CEC3307D5655003CBA4A /* Subtask+CoreDataProperties.swift */,
+				9AF6CEC4307D5655003CBA4A /* Task+CoreDataClass.swift */,
+				9AF6CEC5307D5655003CBA4A /* Task+CoreDataProperties.swift */,
 				9A4E0A7B30762E1600F36AB0 /* ToDo */,
 				9A4E0A7A30762E1600F36AB0 /* Products */,
 			);
@@ -132,8 +138,10 @@
 		9A4E0A7530762E1600F36AB0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
-				9A4E0A9630762F5800F36AB0 /* Todo+CoreDataProperties.swift in Sources */,
-				9A4E0A9730762F5800F36AB0 /* Todo+CoreDataClass.swift in Sources */,
+				9AF6CEC6307D5655003CBA4A /* Subtask+CoreDataProperties.swift in Sources */,
+				9AF6CEC7307D5655003CBA4A /* Task+CoreDataProperties.swift in Sources */,
+				9AF6CEC8307D5655003CBA4A /* Subtask+CoreDataClass.swift in Sources */,
+				9AF6CEC9307D5655003CBA4A /* Task+CoreDataClass.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */

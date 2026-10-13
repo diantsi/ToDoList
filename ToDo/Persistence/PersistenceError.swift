@@ -7,5 +7,7 @@
 
 enum PersistenceError : Error {
     case missingTaskID
+    case missingSubtaskID
     case taskNotFound
+    case subtaskNotFound
 }

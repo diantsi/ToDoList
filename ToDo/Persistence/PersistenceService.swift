@@ -10,7 +10,7 @@ protocol PersistenceService {
     // MARK: - Tasks
     func fetchTasks() throws -> [TodoTask]
     func addTask(_ task: TodoTask) throws
-//    func deleteTask(_ task: TodoTask) throws
+    func deleteTask(_ task: TodoTask) throws
 //    func markTaskAsDone(_ task: TodoTask) throws
 //    
 //    // MARK: - Subtasks

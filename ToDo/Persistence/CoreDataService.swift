@@ -41,17 +41,19 @@ class CoreDataService: PersistenceService {
 
         let entities = try context.fetch(fetchRequest)
 
-        return entities.map { convertTask($0) }
+        return try entities.map(convertTask)
     }
     
     func addTask(_ task: TodoTask) throws {
         let newTask = TaskTodo(context: context)
+        newTask.id = task.id
         newTask.name = task.name
         newTask.dueDate = task.dueDate
         newTask.isDone = task.isDone
         
         for subtask in task.subtasks {
             let newSubtask = SubtaskTodo(context: context)
+            newSubtask.id = subtask.id
             newSubtask.name = subtask.name
             newSubtask.isDone = subtask.isDone
             newSubtask.task = newTask
@@ -62,30 +64,50 @@ class CoreDataService: PersistenceService {
     }
     
 
-    private func convertTask(_ cdEntity: TaskTodo) -> TodoTask {
+    private func convertTask(_ cdEntity: TaskTodo) throws -> TodoTask {
+        guard let id = cdEntity.id
+                else {
+            throw PersistenceError.missingTaskID
+        }
+        let subtasks = try (cdEntity.subtasks as? Set<SubtaskTodo>)?
+               .map(convertSubtask) ?? []
+        
         return TodoTask(
+            id: id,
             name: cdEntity.name ?? "",
             isDone: cdEntity.isDone,
             dueDate: cdEntity.dueDate ?? Date(),
-            subtasks: (cdEntity.subtasks as? Set<SubtaskTodo>)?
-                .compactMap { convertSubtask($0) } ?? []
+            subtasks: subtasks
         )
 
     }
 
     private func convertSubtask(
         _ cdEntity: SubtaskTodo
-    ) -> TodoSubtask? {
+    ) throws -> TodoSubtask {
+        guard let id = cdEntity.id
+                else {
+            throw PersistenceError.missingTaskID
+        }
         return TodoSubtask(
+            id: id,
             name: cdEntity.name ?? "",
             isDone: cdEntity.isDone
         )
     }
 
 
-//    func deleteTask(_ task: TodoTask) throws {
-//        <#code#>
-//    }
+    func deleteTask(_ task: TodoTask) throws {
+        
+        let taskToDeleteReq = TaskTodo.fetchRequest()
+        taskToDeleteReq.predicate = NSPredicate(format: "id == %@", task.id as NSUUID)
+        guard let taskToDelete = try context.fetch(taskToDeleteReq).first
+                else {
+            throw PersistenceError.taskNotFound
+        }
+        context.delete(taskToDelete)
+        try saveContext()
+    }
 //
 //    func markTaskAsDone(_ task: TodoTask) throws {
 //        <#code#>

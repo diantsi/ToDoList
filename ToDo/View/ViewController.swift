@@ -17,6 +17,7 @@ class ViewController: UITableViewController {
         "Прочитати документацію Core Data",
     ]
 
+    // switch between RealmService() and CoreDataService()
     override func viewDidLoad() {
         persistenceService = RealmService()
 

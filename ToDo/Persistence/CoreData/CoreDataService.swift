@@ -87,15 +87,7 @@ class CoreDataService: PersistenceService {
         newTask.name = task.name
         newTask.dueDate = task.dueDate
         newTask.isDone = task.isDone
-
-        for subtask in task.subtasks {
-            let newSubtask = SubtaskTodo(context: context)
-            newSubtask.id = subtask.id
-            newSubtask.name = subtask.name
-            newSubtask.isDone = subtask.isDone
-            newSubtask.task = newTask
-        }
-
+        
         try saveContext()
 
     }

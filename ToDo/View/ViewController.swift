@@ -9,7 +9,7 @@ import UIKit
 
 class ViewController: UITableViewController {
 
-    var persistanceService: any PersistenceService!
+    var persistenceService: any PersistenceService!
     private var tasks: [TodoTask] = []
 
     private var mytasks = [
@@ -18,7 +18,7 @@ class ViewController: UITableViewController {
     ]
 
     override func viewDidLoad() {
-        persistanceService = CoreDataService()
+        persistenceService = CoreDataService()
 
         super.viewDidLoad()
     }
@@ -30,7 +30,7 @@ class ViewController: UITableViewController {
 
     private func loadTasks() {
         do {
-            tasks = try persistanceService.fetchTasks()
+            tasks = try persistenceService.getAllTasks()
             tableView.reloadData()
         } catch {
             print("Failed to fetch tasks: \(error.localizedDescription)")
@@ -79,15 +79,15 @@ class ViewController: UITableViewController {
             return
         }
         let task = tasks[index]
-        
+
         do {
-            try persistanceService.toggleTaskDone(task)
+            try persistenceService.toggleTaskDone(task)
             loadTasks()
         } catch {
             showToggleError(error)
         }
     }
-    
+
     private func showToggleError(_ error: Error) {
         let alert = UIAlertController(
             title: "Не вдалося оновити завдання",
@@ -117,7 +117,7 @@ class ViewController: UITableViewController {
         let task = tasks[indexPath.row]
 
         do {
-            try persistanceService.deleteTask(task)
+            try persistenceService.deleteTask(task)
 
             tasks.remove(at: indexPath.row)
             tableView.deleteRows(
@@ -138,25 +138,77 @@ class ViewController: UITableViewController {
             present(alert, animated: true)
         }
     }
+    
+    override func tableView( _ tableView: UITableView,
+                             didSelectRowAt indexPath: IndexPath) {
+        let task = tasks[indexPath.row]
+        performSegue(withIdentifier: "ShowSubtasks", sender: task)
+    }
 
     override func prepare(
         for segue: UIStoryboardSegue,
         sender: Any?
     ) {
-        guard segue.identifier == "ShowAddTask",
+        switch segue.identifier {
+        case "ShowAddTask":
+            prepareAddTaskSegue(segue)
+
+        case "ShowSubtasks":
+            prepareSubtasksSegue(
+                segue,
+                sender: sender
+            )
+
+        default:
+            break
+        }
+    }
+
+    private func prepareAddTaskSegue(
+        _ segue: UIStoryboardSegue
+    ) {
+        guard
             let navigationController =
                 segue.destination as? UINavigationController,
             let addTaskVC =
-                navigationController.topViewController as? AddTaskViewController
+                navigationController.topViewController
+                as? AddTaskViewController
         else {
             return
         }
 
-        addTaskVC.persistenceService = persistanceService
+        addTaskVC.isSubtask = false
 
-        addTaskVC.onTaskAdded = { [weak self] in
-            self?.loadTasks()
+        addTaskVC.onSave = { [weak self] name, date in
+            guard let self, let date else {
+                return
+            }
+
+            let task = TodoTask(
+                name: name,
+                dueDate: date
+            )
+
+            try persistenceService.addTask(task)
+            loadTasks()
         }
+    }
+
+    private func prepareSubtasksSegue(
+        _ segue: UIStoryboardSegue,
+        sender: Any?
+    ) {
+        guard
+            let subtaskListVC =
+                segue.destination as? SubtaskListViewController,
+            let selectedTask = sender as? TodoTask
+        else {
+            return
+        }
+
+        subtaskListVC.persistenceService = persistenceService
+        subtaskListVC.task = selectedTask
+
     }
 
 }

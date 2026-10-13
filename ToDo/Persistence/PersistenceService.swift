@@ -4,6 +4,7 @@
 //
 //  Created by Діана Цісарук on 12.10.2026.
 //
+import Foundation
 
 protocol PersistenceService {
     
@@ -14,6 +15,7 @@ protocol PersistenceService {
     func toggleTaskDone(_ task: TodoTask) throws
 //
 //    // MARK: - Subtasks
+    func getSubtasks(for taskId: UUID) throws -> [TodoSubtask]
     func addSubtask(_ subtask: TodoSubtask, to task: TodoTask) throws
     func deleteSubtask(_ subtask : TodoSubtask) throws
     func toggleSubtaskDone(_ subtask : TodoSubtask) throws

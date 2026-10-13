@@ -40,6 +40,14 @@ class CoreDataService: PersistenceService {
     func getAllTasks() throws -> [TodoTask] {
         return try fetchTasks().map(convertTask)
     }
+    
+    func getSubtasks(for taskId: UUID) throws -> [TodoSubtask] {
+        let fetchRequest = SubtaskTodo.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "task.id == %@", taskId as NSUUID)
+
+        let entities = try context.fetch(fetchRequest)
+        return try entities.map(convertSubtask)
+    }
 
     private func fetchTasks() throws -> [TaskTodo] {
         let fetchRequest = TaskTodo.fetchRequest()

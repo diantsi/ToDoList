@@ -11,13 +11,20 @@ final class AddTaskViewController: UIViewController {
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var dueDatePicker: UIDatePicker!
 
-    var persistenceService: (any PersistenceService)!
+    var isSubtask: Bool = false
     
-    var onTaskAdded: (() -> Void)?
+    var onSave: ((String, Date?) throws -> Void)?
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        dueDatePicker.isHidden = isSubtask
+        
+        navigationItem.title = isSubtask
+                    ? "Додати підзавдання"
+                    : "Додати завдання"
     }
+    
     
     @IBAction func cancelTapped(_ sender: UIBarButtonItem) {
         dismiss(animated: true)
@@ -31,27 +38,31 @@ final class AddTaskViewController: UIViewController {
         else {
             return
         }
-
-        let task = TodoTask(
-            name: name,
-            dueDate: dueDatePicker.date
-        )
+        let dueDate = isSubtask ? nil : dueDatePicker.date
 
         do {
-            try persistenceService.addTask(task)
-            onTaskAdded?()
+            try onSave?(name, dueDate)
             dismiss(animated: true)
         } catch {
-            let alert = UIAlertController(
-                title: "Save Failed",
-                message: error.localizedDescription,
-                preferredStyle: .alert
-            )
-            alert.addAction(
-                UIAlertAction(title: "OK", style: .default)
-            )
-            present(alert, animated: true)
+            showSaveError(error)
         }
+    }
+
+    private func showSaveError(_ error: Error) {
+        let alert = UIAlertController(
+            title: "Не вдалося зберегти",
+            message: error.localizedDescription,
+            preferredStyle: .alert
+        )
+
+        alert.addAction(
+            UIAlertAction(
+                title: "OK",
+                style: .default
+            )
+        )
+
+        present(alert, animated: true)
     }
 
 }

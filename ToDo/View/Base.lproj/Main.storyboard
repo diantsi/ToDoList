@@ -108,10 +108,83 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <segue destination="QuE-wt-XqK" kind="show" identifier="ShowSubtasks" id="YAv-st-vjs"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="G99-EG-EKx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1241.9847328244275" y="374.64788732394368"/>
+        </scene>
+        <!--Subtask List View Controller-->
+        <scene sceneID="az7-zG-mO3">
+            <objects>
+                <tableViewController id="QuE-wt-XqK" customClass="SubtaskListViewController" customModule="ToDo" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="80" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="LPZ-Mo-Lc5">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="subtask_cell" id="1mr-mh-MKR" customClass="SubtaskCell" customModule="ToDo" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="50" width="393" height="55.333332061767578"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="1mr-mh-MKR" id="ffD-Zu-AVm">
+                                    <rect key="frame" x="0.0" y="0.0" width="393" height="55.333332061767578"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="bJq-Rk-8fG">
+                                            <rect key="frame" x="10" y="10" width="373" height="35.333333333333336"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DoL-6r-Tdh">
+                                                    <rect key="frame" x="0.0" y="0.0" width="54.666666666666664" height="35.333333333333336"/>
+                                                    <buttonConfiguration key="configuration" style="plain" image="square" catalog="system">
+                                                        <color key="baseForegroundColor" systemColor="labelColor"/>
+                                                    </buttonConfiguration>
+                                                    <connections>
+                                                        <action selector="toggleSubtaskIsDone:" destination="1mr-mh-MKR" eventType="touchUpInside" id="4n9-9f-PwU"/>
+                                                    </connections>
+                                                </button>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="name" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NRR-h5-ksW">
+                                                    <rect key="frame" x="74.666666666666657" y="0.0" width="298.33333333333337" height="35.333333333333336"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="NRR-h5-ksW" firstAttribute="width" secondItem="bJq-Rk-8fG" secondAttribute="width" multiplier="0.8" id="obd-H0-peV" userLabel="name.width = 0.8 × width"/>
+                                            </constraints>
+                                        </stackView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="bJq-Rk-8fG" firstAttribute="top" secondItem="ffD-Zu-AVm" secondAttribute="top" constant="10" id="SfI-Qc-nIl"/>
+                                        <constraint firstAttribute="bottom" secondItem="bJq-Rk-8fG" secondAttribute="bottom" constant="10" id="WpT-bG-eQI"/>
+                                        <constraint firstAttribute="trailing" secondItem="bJq-Rk-8fG" secondAttribute="trailing" constant="10" id="Yww-Yl-Fe9"/>
+                                        <constraint firstItem="bJq-Rk-8fG" firstAttribute="leading" secondItem="ffD-Zu-AVm" secondAttribute="leading" constant="10" id="ex9-zf-aGb"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="doneButton" destination="DoL-6r-Tdh" id="yjM-bh-7kN"/>
+                                    <outlet property="nameLabel" destination="NRR-h5-ksW" id="3uJ-Vp-Gyn"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="QuE-wt-XqK" id="KkL-VC-vBl"/>
+                            <outlet property="delegate" destination="QuE-wt-XqK" id="aIc-h7-5hG"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="QWO-4g-Xp0">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="lGZ-ft-wPK">
+                            <connections>
+                                <segue destination="IAG-Fp-B5u" kind="presentation" identifier="ShowAddSubtask" id="e0H-oi-dFR"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VTg-3U-fX6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1265" y="1132"/>
         </scene>
         <!--Додати завдання-->
         <scene sceneID="K4d-cC-V3F">
@@ -188,6 +261,9 @@
             <point key="canvasLocation" x="2472.5190839694656" y="374.64788732394368"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="e0H-oi-dFR"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="chevron.forward" catalog="system" width="93" height="128"/>
         <image name="square" catalog="system" width="128" height="119"/>

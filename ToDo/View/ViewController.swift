@@ -18,7 +18,7 @@ class ViewController: UITableViewController {
     ]
 
     override func viewDidLoad() {
-        persistenceService = CoreDataService()
+        persistenceService = RealmService()
 
         super.viewDidLoad()
     }

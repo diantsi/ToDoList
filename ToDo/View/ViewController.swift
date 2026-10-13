@@ -63,7 +63,46 @@ class ViewController: UITableViewController {
         let task = tasks[indexPath.row]
         cell.configure(with: task)
 
+        cell.onToggle = { [weak self] in
+            self?.toggleTask(id: task.id)
+        }
+
         return cell
+    }
+
+    private func toggleTask(id: UUID) {
+        guard
+            let index = tasks.firstIndex(
+                where: { $0.id == id }
+            )
+        else {
+            return
+        }
+        let task = tasks[index]
+        
+        do {
+            try persistanceService.toggleTaskDone(task)
+            loadTasks()
+        } catch {
+            showToggleError(error)
+        }
+    }
+    
+    private func showToggleError(_ error: Error) {
+        let alert = UIAlertController(
+            title: "Не вдалося оновити завдання",
+            message: error.localizedDescription,
+            preferredStyle: .alert
+        )
+
+        alert.addAction(
+            UIAlertAction(
+                title: "OK",
+                style: .default
+            )
+        )
+
+        present(alert, animated: true)
     }
 
     override func tableView(
@@ -119,4 +158,5 @@ class ViewController: UITableViewController {
             self?.loadTasks()
         }
     }
+
 }

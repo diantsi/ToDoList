@@ -98,9 +98,9 @@ class CoreDataService: PersistenceService {
 
 
     func deleteTask(_ task: TodoTask) throws {
-        
         let taskToDeleteReq = TaskTodo.fetchRequest()
         taskToDeleteReq.predicate = NSPredicate(format: "id == %@", task.id as NSUUID)
+        taskToDeleteReq.fetchLimit = 1
         guard let taskToDelete = try context.fetch(taskToDeleteReq).first
                 else {
             throw PersistenceError.taskNotFound
@@ -108,10 +108,18 @@ class CoreDataService: PersistenceService {
         context.delete(taskToDelete)
         try saveContext()
     }
-//
-//    func markTaskAsDone(_ task: TodoTask) throws {
-//        <#code#>
-//    }
+
+    func toggleTaskDone(_ task: TodoTask) throws {
+        let taskToUpdateReq = TaskTodo.fetchRequest()
+        taskToUpdateReq.predicate = NSPredicate(format: "id == %@", task.id as NSUUID)
+        taskToUpdateReq.fetchLimit = 1
+        guard let taskToUpdate = try context.fetch(taskToUpdateReq).first
+                else {
+            throw PersistenceError.taskNotFound
+        }
+        taskToUpdate.isDone.toggle()
+        try saveContext()
+    }
 //
 //    func addSubtask(_ subtask: TodoSubtask, to task: TodoTask) throws {
 //        <#code#>

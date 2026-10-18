@@ -11,4 +11,6 @@ final class RealmSubtask: Object {
     @Persisted(primaryKey: true) var id: UUID
     @Persisted var name: String = ""
     @Persisted var isDone: Bool = false
+    @Persisted var dueDate: Date
+    @Persisted var needToNotify: Bool = false
 }

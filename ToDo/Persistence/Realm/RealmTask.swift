@@ -14,4 +14,5 @@ final class RealmTask: Object {
     @Persisted var isDone: Bool
     @Persisted var dueDate: Date
     @Persisted var subtasks: List<RealmSubtask>
+    @Persisted var needToNotify: Bool
 }

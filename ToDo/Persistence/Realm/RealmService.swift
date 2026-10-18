@@ -8,12 +8,47 @@ import RealmSwift
 import Foundation
 import Realm
 
+
+enum RealmMigrationManager {
+
+    private nonisolated static let schemaVersion: UInt64 = 2
+
+    nonisolated static var configuration: Realm.Configuration {
+        Realm.Configuration(
+            schemaVersion: schemaVersion,
+            migrationBlock: migrate
+        )
+    }
+
+    private nonisolated static func migrate(
+        migration: Migration,
+        oldSchemaVersion: UInt64
+    ) {
+        if oldSchemaVersion < 1 {
+            migration.enumerateObjects(
+                ofType: RealmTask.className()
+            ) { _, newObject in
+                newObject?["needToNotify"] = false
+            }
+        }
+
+        if oldSchemaVersion < 2 {
+            migration.enumerateObjects(
+                ofType: RealmSubtask.className()
+            ) { _, newObject in
+                newObject?["dueDate"] = Date()
+                newObject?["needToNotify"] = false
+            }
+        }
+    }
+}
+
 class RealmService: PersistenceService {
 
     private let realm: Realm
-
+    
     init() {
-        guard let realm = try? Realm()
+        guard let realm = try? Realm(configuration: RealmMigrationManager.configuration)
         else {
             fatalError("Failed to load persistent stores")
         }
@@ -35,7 +70,8 @@ class RealmService: PersistenceService {
             name: realmTask.name,
             isDone: realmTask.isDone,
             dueDate: realmTask.dueDate,
-            subtasks: subtasks
+            subtasks: subtasks,
+            needToNotify: realmTask.needToNotify
         )
     }
 
@@ -43,7 +79,9 @@ class RealmService: PersistenceService {
         return TodoSubtask(
             id: realmSubTask.id,
             name: realmSubTask.name,
-            isDone: realmSubTask.isDone
+            isDone: realmSubTask.isDone,
+            dueDate: realmSubTask.dueDate,
+            needToNotify: realmSubTask.needToNotify
         )
     }
 
@@ -53,6 +91,7 @@ class RealmService: PersistenceService {
         taskEntity.name = task.name
         taskEntity.isDone = task.isDone
         taskEntity.dueDate = task.dueDate
+        taskEntity.needToNotify = task.needToNotify
         try realm.write {
             realm.add(taskEntity)
         }
@@ -118,6 +157,8 @@ class RealmService: PersistenceService {
         subtaskEntity.id = subtask.id
         subtaskEntity.name = subtask.name
         subtaskEntity.isDone = subtask.isDone
+        subtaskEntity.dueDate = subtask.dueDate
+        subtaskEntity.needToNotify = subtask.needToNotify
         try realm.write {
             realm.add(subtaskEntity)
             parentTask.subtasks.append(subtaskEntity)

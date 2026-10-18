@@ -6,18 +6,25 @@
 //
 import Foundation
 
-struct TodoSubtask {
+struct TodoSubtask: ReminderItem {
     let id: UUID
     var name: String
     var isDone: Bool
+    var dueDate: Date
+    var needToNotify: Bool
 
     init(
         id: UUID = UUID(),
         name: String,
         isDone: Bool = false,
+        dueDate: Date,
+        needToNotify: Bool = false
     ) {
         self.id = id
         self.name = name
         self.isDone = isDone
+        self.dueDate = dueDate
+        self.needToNotify = needToNotify
     }
+
 }

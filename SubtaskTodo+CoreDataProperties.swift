@@ -2,7 +2,7 @@
 //  SubtaskTodo+CoreDataProperties.swift
 //  ToDo
 //
-//  Created by Діана Цісарук on 13.10.2026.
+//  Created by Діана Цісарук on 18.10.2026.
 //
 //
 
@@ -18,9 +18,11 @@ extension SubtaskTodo {
         return NSFetchRequest<SubtaskTodo>(entityName: "SubtaskTodo")
     }
 
+    @NSManaged nonisolated public var id: UUID?
     @NSManaged nonisolated public var isDone: Bool
     @NSManaged nonisolated public var name: String?
-    @NSManaged nonisolated public var id: UUID?
+    @NSManaged nonisolated public var needToNotify: Bool
+    @NSManaged nonisolated public var dueDate: Date?
     @NSManaged nonisolated public var task: TaskTodo?
 
 }

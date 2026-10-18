@@ -87,6 +87,7 @@ class CoreDataService: PersistenceService {
         newTask.name = task.name
         newTask.dueDate = task.dueDate
         newTask.isDone = task.isDone
+        newTask.needToNotify = task.needToNotify
         
         try saveContext()
 
@@ -106,7 +107,8 @@ class CoreDataService: PersistenceService {
             name: cdEntity.name ?? "",
             isDone: cdEntity.isDone,
             dueDate: cdEntity.dueDate ?? Date(),
-            subtasks: subtasks
+            subtasks: subtasks,
+            needToNotify: cdEntity.needToNotify
         )
 
     }
@@ -117,6 +119,8 @@ class CoreDataService: PersistenceService {
         newSubtask.id = subtask.id
         newSubtask.name = subtask.name
         newSubtask.isDone = subtask.isDone
+        newSubtask.dueDate = subtask.dueDate
+        newSubtask.needToNotify = subtask.needToNotify
         newSubtask.task = task
         try saveContext()
     }
@@ -131,7 +135,9 @@ class CoreDataService: PersistenceService {
         return TodoSubtask(
             id: id,
             name: cdEntity.name ?? "",
-            isDone: cdEntity.isDone
+            isDone: cdEntity.isDone,
+            dueDate: cdEntity.dueDate ?? Date(),
+            needToNotify: cdEntity.needToNotify
         )
     }
 

@@ -12,7 +12,12 @@ class TaskCell: UITableViewCell {
     @IBOutlet weak var dueDateLabel: UILabel!
     @IBOutlet weak var doneButton: UIButton!
 
+    @IBAction func remindSwitched(_ sender: UISwitch) {
+        onRemind?(sender.isOn)
+    }
+    
     var onToggle: (() -> Void)?
+    var onRemind: ((Bool) -> Void)?
 
     func configure(with task: TodoTask) {
         nameLabel.text = task.name
@@ -20,7 +25,6 @@ class TaskCell: UITableViewCell {
             date: .abbreviated,
             time: .shortened
         )
-        print("isDone: \(task.isDone)")
         configureDoneButton(isDone: task.isDone)
     }
 
@@ -42,5 +46,6 @@ class TaskCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         onToggle = nil
+        onRemind = nil
     }
 }

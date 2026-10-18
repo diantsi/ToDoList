@@ -7,20 +7,31 @@
 
 import UIKit
 
-class SubtaskListViewController: UITableViewController {
+final class SubtaskListViewController: UIViewController,
+    UITableViewDataSource,
+    UITableViewDelegate
+{
+
+    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var notificationSwitch: UISwitch!
 
     var persistenceService: any PersistenceService!
     var task: TodoTask!
     private var subtasks: [TodoSubtask] = []
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        tableView.dataSource = self
+        tableView.delegate = self
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         title = task.name
+        notificationSwitch.isOn = task.needToNotify
         loadSubtasks()
     }
     
@@ -36,15 +47,19 @@ class SubtaskListViewController: UITableViewController {
         }
     }
 
+    @IBAction private func notificationSwitchChanged(_ sender: UISwitch) {
+        
+    }
 
-    override func tableView(
+
+    func tableView(
         _ tableView: UITableView,
         numberOfRowsInSection section: Int
     ) -> Int {
         return subtasks.count
     }
 
-    override func tableView(
+    func tableView(
         _ tableView: UITableView,
         cellForRowAt indexPath: IndexPath
     ) -> UITableViewCell {
@@ -63,6 +78,7 @@ class SubtaskListViewController: UITableViewController {
         cell.onToggle = { [weak self] in
             self?.toggleSubtask(id: subtask.id)
         }
+
 
         return cell
     }
@@ -102,7 +118,7 @@ class SubtaskListViewController: UITableViewController {
         present(alert, animated: true)
     }
 
-    override func tableView(
+    func tableView(
         _ tableView: UITableView,
         commit editingStyle: UITableViewCell.EditingStyle,
         forRowAt indexPath: IndexPath
@@ -151,18 +167,21 @@ class SubtaskListViewController: UITableViewController {
 
         addTaskVC.isSubtask = true
 
-        addTaskVC.onSave = { [weak self] name, _ in
+        addTaskVC.onSave = { [weak self] name, dueDate, needToNotify in
             guard let self else {
                 return
             }
 
-            let subtask = TodoSubtask(name: name)
+            let subtask = TodoSubtask(
+                name: name,
+                dueDate: dueDate,
+                needToNotify: needToNotify
+            )
 
             try persistenceService.addSubtask(
                 subtask,
                 to: task
             )
-
             loadSubtasks()
         }
     }

@@ -12,11 +12,6 @@ class ViewController: UITableViewController {
     var persistenceService: any PersistenceService!
     private var tasks: [TodoTask] = []
 
-    private var mytasks = [
-        "Зробити лабораторну",
-        "Прочитати документацію Core Data",
-    ]
-
     // switch between RealmService() and CoreDataService()
     override func viewDidLoad() {
         persistenceService = RealmService()
@@ -48,7 +43,7 @@ class ViewController: UITableViewController {
         return tasks.count
     }
 
-    override func tableView(
+    override func tableView (
         _ tableView: UITableView,
         cellForRowAt indexPath: IndexPath
     ) -> UITableViewCell {
@@ -67,8 +62,17 @@ class ViewController: UITableViewController {
         cell.onToggle = { [weak self] in
             self?.toggleTask(id: task.id)
         }
+        
+        cell.onRemind = { [weak self] isOn in
+            self?.switchReminder(isOn)
+        }
 
         return cell
+    }
+    
+    
+    private func switchReminder(_ isOn: Bool) {
+        
     }
 
     private func toggleTask(id: UUID) {
@@ -180,17 +184,19 @@ class ViewController: UITableViewController {
 
         addTaskVC.isSubtask = false
 
-        addTaskVC.onSave = { [weak self] name, date in
-            guard let self, let date else {
+        addTaskVC.onSave = { [weak self] name, date, needToNotify in
+            guard let self else {
                 return
             }
 
             let task = TodoTask(
                 name: name,
-                dueDate: date
+                dueDate: date,
+                needToNotify: needToNotify
             )
 
             try persistenceService.addTask(task)
+
             loadTasks()
         }
     }

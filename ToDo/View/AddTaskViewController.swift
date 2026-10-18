@@ -11,14 +11,14 @@ final class AddTaskViewController: UIViewController {
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var dueDatePicker: UIDatePicker!
 
+    @IBOutlet weak var toNotifySwitch: UISwitch!
+    
     var isSubtask: Bool = false
     
-    var onSave: ((String, Date?) throws -> Void)?
+    var onSave: ((String, Date, Bool) throws -> Void)?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        dueDatePicker.isHidden = isSubtask
         
         navigationItem.title = isSubtask
                     ? "Додати підзавдання"
@@ -38,10 +38,8 @@ final class AddTaskViewController: UIViewController {
         else {
             return
         }
-        let dueDate = isSubtask ? nil : dueDatePicker.date
-
         do {
-            try onSave?(name, dueDate)
+            try onSave?(name, dueDatePicker.date, toNotifySwitch.isOn)
             dismiss(animated: true)
         } catch {
             showSaveError(error)

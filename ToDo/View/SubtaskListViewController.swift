@@ -195,7 +195,7 @@ final class SubtaskListViewController: UIViewController,
 
         do {
             try persistenceService.deleteSubtask(subtask)
-
+            notificationService.cancelNotification(with: subtask)
             subtasks.remove(at: indexPath.row)
             tableView.deleteRows(
                 at: [indexPath],

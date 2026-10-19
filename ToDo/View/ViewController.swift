@@ -159,7 +159,7 @@ class ViewController: UITableViewController {
 
         do {
             try persistenceService.deleteTask(task)
-
+            notificationService.cancelNotification(with: task)
             tasks.remove(at: indexPath.row)
             tableView.deleteRows(
                 at: [indexPath],

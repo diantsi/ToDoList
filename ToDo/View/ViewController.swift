@@ -12,6 +12,10 @@ class ViewController: UITableViewController {
     var persistenceService: any PersistenceService!
     private var tasks: [TodoTask] = []
 
+    private var notificationService : UserNotificationsService {
+        return UserNotificationsService.shared
+    }
+
     // switch between RealmService() and CoreDataService()
     override func viewDidLoad() {
         persistenceService = RealmService()
@@ -196,7 +200,10 @@ class ViewController: UITableViewController {
             )
 
             try persistenceService.addTask(task)
-
+            
+            if needToNotify {
+                notificationService.sendNotification(with: task)
+            }
             loadTasks()
         }
     }

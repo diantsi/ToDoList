@@ -129,6 +129,24 @@ class RealmService: PersistenceService {
         }
     }
 
+    func setTaskNotificationEnabled(
+        _ isEnabled: Bool,
+        for taskId: UUID
+    ) throws {
+        guard
+            let taskToUpdate = realm
+                .objects(RealmTask.self)
+                .where({ $0.id == taskId })
+                .first
+        else {
+            throw PersistenceError.taskNotFound
+        }
+
+        try realm.write {
+            taskToUpdate.needToNotify = isEnabled
+        }
+    }
+
     func getSubtasks(for taskId: UUID) throws -> [TodoSubtask] {
         guard
             let parentTask =
@@ -192,6 +210,24 @@ class RealmService: PersistenceService {
         }
         try realm.write {
             subtaskToUpdate.isDone.toggle()
+        }
+    }
+
+    func setSubtaskNotificationEnabled(
+        _ isEnabled: Bool,
+        for subtaskId: UUID
+    ) throws {
+        guard
+            let subtaskToUpdate = realm
+                .objects(RealmSubtask.self)
+                .where({ $0.id == subtaskId })
+                .first
+        else {
+            throw PersistenceError.subtaskNotFound
+        }
+
+        try realm.write {
+            subtaskToUpdate.needToNotify = isEnabled
         }
     }
 

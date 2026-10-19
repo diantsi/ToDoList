@@ -19,6 +19,9 @@ final class SubtaskListViewController: UIViewController,
     var task: TodoTask!
     private var subtasks: [TodoSubtask] = []
 
+    private var notificationService : UserNotificationsService {
+        return UserNotificationsService.shared
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,7 +51,18 @@ final class SubtaskListViewController: UIViewController,
     }
 
     @IBAction private func notificationSwitchChanged(_ sender: UISwitch) {
-        
+        let needToNotify = sender.isOn
+        do {
+            try persistenceService.setTaskNotificationEnabled(needToNotify, for: task.id)
+        } catch {
+            showToggleError(error)
+            return
+        }
+        if needToNotify {
+            notificationService.sendNotification(with: task)
+        } else {
+            notificationService.cancelNotification(with: task)
+        }
     }
 
 
@@ -78,11 +92,29 @@ final class SubtaskListViewController: UIViewController,
         cell.onToggle = { [weak self] in
             self?.toggleSubtask(id: subtask.id)
         }
+        
+        cell.onNotificationChange = { [weak self] isOn in
+            self?.setUpNotification(needToNotify: isOn, for: subtask)
+        }
 
 
         return cell
     }
 
+    private func setUpNotification(needToNotify : Bool, for subtask: TodoSubtask){
+        do {
+            try persistenceService.setSubtaskNotificationEnabled(needToNotify, for: subtask.id)
+        } catch {
+            showToggleError(error)
+            return
+        }
+        if needToNotify {
+            notificationService.sendNotification(with: subtask)
+        } else {
+            notificationService.cancelNotification(with: subtask)
+        }
+    }
+    
     private func toggleSubtask(id: UUID) {
         guard
             let index = subtasks.firstIndex(
@@ -182,6 +214,11 @@ final class SubtaskListViewController: UIViewController,
                 subtask,
                 to: task
             )
+            
+            if needToNotify {
+                notificationService.sendNotification(with: subtask)
+            }
+            
             loadSubtasks()
         }
     }

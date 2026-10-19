@@ -153,6 +153,15 @@ class CoreDataService: PersistenceService {
         try saveContext()
     }
 
+    func setTaskNotificationEnabled(
+        _ isEnabled: Bool,
+        for taskId: UUID
+    ) throws {
+        let task = try fetchTask(taskId)
+        task.needToNotify = isEnabled
+        try saveContext()
+    }
+
     func deleteSubtask(_ subtask: TodoSubtask) throws {
         let subtask = try fetchSubtask(subtask.id)
         context.delete(subtask)
@@ -162,6 +171,15 @@ class CoreDataService: PersistenceService {
     func toggleSubtaskDone(_ subtask: TodoSubtask) throws {
         let subtask = try fetchSubtask(subtask.id)
         subtask.isDone.toggle()
+        try saveContext()
+    }
+
+    func setSubtaskNotificationEnabled(
+        _ isEnabled: Bool,
+        for subtaskId: UUID
+    ) throws {
+        let subtask = try fetchSubtask(subtaskId)
+        subtask.needToNotify = isEnabled
         try saveContext()
     }
 

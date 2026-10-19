@@ -12,8 +12,12 @@ final class UserNotificationsService: NSObject {
     
     static let shared = UserNotificationsService()
     
+    private let localNotificationService: LocalNotificationService
+    
     private override init() {
+        localNotificationService = LocalNotificationService()
         super.init()
+        
         userNotificationCenter.delegate = self
     }
 
@@ -37,6 +41,27 @@ final class UserNotificationsService: NSObject {
             }
         }
     }
+    
+    
+    func sendNotification(with reminderItem: any ReminderItem) {
+        let request = localNotificationService.createLocalNotification(
+            for: reminderItem
+        )
+        Task {
+            do {
+                try await userNotificationCenter.add(request)
+            } catch {
+                print("cannot sent local notification")
+                return
+            }
+        }
+    }
+    
+    func cancelNotification(with reminderItem: any ReminderItem) {
+        userNotificationCenter.removePendingNotificationRequests(withIdentifiers: [reminderItem.notificationId])
+    }
+    
+    
 
 }
 

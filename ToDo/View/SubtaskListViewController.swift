@@ -59,7 +59,7 @@ final class SubtaskListViewController: UIViewController,
             return
         }
         if needToNotify {
-            notificationService.sendNotification(with: task)
+            sendNotification(for: task)
         } else {
             notificationService.cancelNotification(with: task)
         }
@@ -109,7 +109,7 @@ final class SubtaskListViewController: UIViewController,
             return
         }
         if needToNotify {
-            notificationService.sendNotification(with: subtask)
+            sendNotification(for: subtask)
         } else {
             notificationService.cancelNotification(with: subtask)
         }
@@ -145,6 +145,38 @@ final class SubtaskListViewController: UIViewController,
                 title: "OK",
                 style: .default
             )
+        )
+
+        present(alert, animated: true)
+    }
+
+    private func sendNotification(for reminderItem: any ReminderItem) {
+        Task { [weak self] in
+            guard let self else {
+                return
+            }
+
+            do {
+                try await notificationService.sendNotification(
+                    with: reminderItem
+                )
+            } catch NotificationError.notificationAccessDenied {
+                showNotificationAccessAlert()
+            } catch {
+                showToggleError(error)
+            }
+        }
+    }
+
+    private func showNotificationAccessAlert() {
+        let alert = UIAlertController(
+            title: "Сповіщення вимкнені",
+            message: "Дозвольте сповіщення для ToDo в налаштуваннях пристрою",
+            preferredStyle: .alert
+        )
+
+        alert.addAction(
+            UIAlertAction(title: "OK", style: .default)
         )
 
         present(alert, animated: true)
@@ -216,7 +248,7 @@ final class SubtaskListViewController: UIViewController,
             )
             
             if needToNotify {
-                notificationService.sendNotification(with: subtask)
+                sendNotification(for: subtask)
             }
             
             loadSubtasks()

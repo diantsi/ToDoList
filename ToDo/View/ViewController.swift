@@ -114,6 +114,38 @@ class ViewController: UITableViewController {
         present(alert, animated: true)
     }
 
+    private func sendNotification(for reminderItem: any ReminderItem) {
+        Task { [weak self] in
+            guard let self else {
+                return
+            }
+
+            do {
+                try await notificationService.sendNotification(
+                    with: reminderItem
+                )
+            } catch NotificationError.notificationAccessDenied {
+                showNotificationAccessAlert()
+            } catch {
+                showToggleError(error)
+            }
+        }
+    }
+
+    private func showNotificationAccessAlert() {
+        let alert = UIAlertController(
+            title: "Сповіщення вимкнені",
+            message: "Дозвольте сповіщення для ToDo в налаштуваннях пристрою",
+            preferredStyle: .alert
+        )
+
+        alert.addAction(
+            UIAlertAction(title: "OK", style: .default)
+        )
+
+        present(alert, animated: true)
+    }
+
     override func tableView(
         _ tableView: UITableView,
         commit editingStyle: UITableViewCell.EditingStyle,
@@ -202,7 +234,7 @@ class ViewController: UITableViewController {
             try persistenceService.addTask(task)
             
             if needToNotify {
-                notificationService.sendNotification(with: task)
+                sendNotification(for: task)
             }
             loadTasks()
         }

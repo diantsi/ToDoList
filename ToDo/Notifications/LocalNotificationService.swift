@@ -9,12 +9,11 @@ import UserNotifications
 
 final class LocalNotificationService {
     
-    private let content = UNMutableNotificationContent()
-    
     
     func createLocalNotification(
         for reminderItem: any ReminderItem
     ) -> UNNotificationRequest {
+        let content = UNMutableNotificationContent()
         content.title = reminderItem.name
         
         let dateComponents = Calendar.current.dateComponents(

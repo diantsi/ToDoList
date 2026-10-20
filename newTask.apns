@@ -1,0 +1,13 @@
+{
+  "aps": {
+    "alert": {
+      "title": "Обовʼязкове!",
+      "body": "Купити булочку"
+    },
+    "sound": "default",
+    "badge": 1,
+    "category": "adding_task_category"
+  },
+  "due": "2026-11-20T22:38:00+03:00",
+  "Simulator Target Bundle": "ua.edu.ukma.tsisaruk.ToDo"
+}

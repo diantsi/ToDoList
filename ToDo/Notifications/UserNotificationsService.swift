@@ -141,27 +141,39 @@ final class UserNotificationsService: NSObject {
         receivedAt: Date
     ) throws -> NotificationTask {
         let alert = alertContent(from: userInfo)
+        let title = fallbackTitle.isEmpty
+            ? alert.title
+            : fallbackTitle
+        let body = fallbackBody.isEmpty
+            ? alert.body
+            : fallbackBody
 
         guard
-            let id = userInfo["id"] as? String,
-            !id.isEmpty,
             let dueDate = dueDate(from: userInfo["due"])
         else {
             throw NotificationError.invalidPayload
         }
 
         return NotificationTask(
-            id: id,
-            title: fallbackTitle.isEmpty
-                ? alert.title
-                : fallbackTitle,
-            body: fallbackBody.isEmpty
-                ? alert.body
-                : fallbackBody,
+            id: notificationId(
+                title: title,
+                body: body,
+                dueDate: dueDate
+            ),
+            title: title,
+            body: body,
             dueDate: dueDate,
             status: .pending,
             receivedAt: receivedAt
         )
+    }
+
+    private func notificationId(
+        title: String,
+        body: String,
+        dueDate: Date
+    ) -> String {
+        return "\(dueDate.timeIntervalSince1970).\(title).\(body)"
     }
 
     private func dueDate(from value: Any?) -> Date? {

@@ -16,11 +16,17 @@ class ViewController: UITableViewController {
         return UserNotificationsService.shared
     }
 
-    // switch between RealmService() and CoreDataService()
     override func viewDidLoad() {
-        persistenceService = CoreDataService()
+        persistenceService = PersistenceServiceProvider.shared
 
         super.viewDidLoad()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(todoTasksDidChange),
+            name: .todoTasksDidChange,
+            object: nil
+        )
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -35,6 +41,10 @@ class ViewController: UITableViewController {
         } catch {
             print("Failed to fetch tasks: \(error.localizedDescription)")
         }
+    }
+
+    @objc private func todoTasksDidChange() {
+        loadTasks()
     }
 
     @IBAction func addTaskTapped(_ sender: UIBarButtonItem) {
@@ -66,18 +76,11 @@ class ViewController: UITableViewController {
         cell.onToggle = { [weak self] in
             self?.toggleTask(id: task.id)
         }
-        
-        cell.onRemind = { [weak self] isOn in
-            self?.switchReminder(isOn)
-        }
 
         return cell
     }
     
-    
-    private func switchReminder(_ isOn: Bool) {
-        
-    }
+
 
     private func toggleTask(id: UUID) {
         guard
@@ -160,6 +163,9 @@ class ViewController: UITableViewController {
         do {
             try persistenceService.deleteTask(task)
             notificationService.cancelNotification(with: task)
+            for subtask in task.subtasks {
+                notificationService.cancelNotification(with: subtask)
+            }
             tasks.remove(at: indexPath.row)
             tableView.deleteRows(
                 at: [indexPath],

@@ -1,3 +1,5 @@
+import Foundation
+import Realm
 //
 //  RealmService.swift
 //  ToDo
@@ -5,18 +7,20 @@
 //  Created by Діана Цісарук on 13.10.2026.
 //
 import RealmSwift
-import Foundation
-import Realm
-
 
 enum RealmMigrationManager {
 
-    private nonisolated static let schemaVersion: UInt64 = 3
+    private nonisolated static let schemaVersion: UInt64 = 4
 
     nonisolated static var configuration: Realm.Configuration {
         Realm.Configuration(
             schemaVersion: schemaVersion,
-            migrationBlock: migrate
+            migrationBlock: migrate,
+            objectTypes: [
+                RealmTask.self,
+                RealmSubtask.self,
+                RealmNotificationTask.self,
+            ]
         )
     }
 
@@ -46,9 +50,12 @@ enum RealmMigrationManager {
 class RealmService: PersistenceService {
 
     private let realm: Realm
-    
+
     init() {
-        guard let realm = try? Realm(configuration: RealmMigrationManager.configuration)
+        guard
+            let realm = try? Realm(
+                configuration: RealmMigrationManager.configuration
+            )
         else {
             fatalError("Failed to load persistent stores")
         }
@@ -134,7 +141,8 @@ class RealmService: PersistenceService {
         for taskId: UUID
     ) throws {
         guard
-            let taskToUpdate = realm
+            let taskToUpdate =
+                realm
                 .objects(RealmTask.self)
                 .where({ $0.id == taskId })
                 .first
@@ -218,7 +226,8 @@ class RealmService: PersistenceService {
         for subtaskId: UUID
     ) throws {
         guard
-            let subtaskToUpdate = realm
+            let subtaskToUpdate =
+                realm
                 .objects(RealmSubtask.self)
                 .where({ $0.id == subtaskId })
                 .first
@@ -242,10 +251,11 @@ class RealmService: PersistenceService {
     func addNotificationTask(
         _ notificationTask: NotificationTask
     ) throws {
-        guard realm.object(
-            ofType: RealmNotificationTask.self,
-            forPrimaryKey: notificationTask.id
-        ) == nil else {
+        let existingEntity = realm.objects(RealmNotificationTask.self)
+            .filter("id == %@", notificationTask.id)
+            .first
+
+        guard existingEntity == nil else {
             return
         }
 
@@ -266,10 +276,11 @@ class RealmService: PersistenceService {
         _ status: NotificationStatus,
         for notificationId: String
     ) throws {
-        guard let entity = realm.object(
-            ofType: RealmNotificationTask.self,
-            forPrimaryKey: notificationId
-        ) else {
+        let entity = realm.objects(RealmNotificationTask.self)
+            .filter("id == %@", notificationId)
+            .first
+
+        guard let entity else {
             throw PersistenceError.notificationTaskNotFound
         }
 

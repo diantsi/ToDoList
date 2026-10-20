@@ -13,6 +13,20 @@ struct NotificationTask {
     let dueDate: Date
     let status: NotificationStatus
     let receivedAt: Date
+
+    var taskName: String {
+        var taskname = ""
+        let trimmedTitle = title.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+
+        if !trimmedTitle.isEmpty {
+            taskname.append("\(trimmedTitle), ")
+        }
+
+        taskname.append(body.trimmingCharacters(in: .whitespacesAndNewlines))
+        return taskname
+    }
 }
 
 enum NotificationStatus: String {

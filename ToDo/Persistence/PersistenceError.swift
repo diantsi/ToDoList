@@ -10,5 +10,7 @@ enum PersistenceError : Error {
     case missingSubtaskID
     case taskNotFound
     case subtaskNotFound
+    case notificationTaskNotFound
+    case invalidNotificationStatus
     case cannotUpdateTask
 }

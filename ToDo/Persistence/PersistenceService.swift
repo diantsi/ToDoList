@@ -24,4 +24,12 @@ protocol PersistenceService {
         _ isEnabled: Bool,
         for subtaskId: UUID
     ) throws
+
+    // MARK: - Received notifications
+    func getAllNotificationTasks() throws -> [NotificationTask]
+    func addNotificationTask(_ notificationTask: NotificationTask) throws
+    func setNotificationTaskStatus(
+        _ status: NotificationStatus,
+        for notificationId: String
+    ) throws
 }

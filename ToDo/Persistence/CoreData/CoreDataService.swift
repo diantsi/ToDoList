@@ -183,4 +183,77 @@ class CoreDataService: PersistenceService {
         try saveContext()
     }
 
+    // MARK: - Received notifications
+
+    func getAllNotificationTasks() throws -> [NotificationTask] {
+        let request = NSFetchRequest<CDNotification>(
+            entityName: "CDNotification"
+        )
+        request.sortDescriptors = [
+            NSSortDescriptor(key: "receivedAt", ascending: false)
+        ]
+
+        return try context.fetch(request).map(convertNotificationTask)
+    }
+
+    func addNotificationTask(
+        _ notificationTask: NotificationTask
+    ) throws {
+        guard try findNotificationTask(notificationTask.id) == nil else {
+            return
+        }
+
+        let entity = CDNotification(context: context)
+        entity.id = notificationTask.id
+        entity.title = notificationTask.title
+        entity.body = notificationTask.body
+        entity.dueDate = notificationTask.dueDate
+        entity.status = notificationTask.status.rawValue
+        entity.receivedAt = notificationTask.receivedAt
+
+        try saveContext()
+    }
+
+    func setNotificationTaskStatus(
+        _ status: NotificationStatus,
+        for notificationId: String
+    ) throws {
+        guard let entity = try findNotificationTask(notificationId) else {
+            throw PersistenceError.notificationTaskNotFound
+        }
+
+        entity.status = status.rawValue
+        try saveContext()
+    }
+
+    private func findNotificationTask(
+        _ id: String
+    ) throws -> CDNotification? {
+        let request = NSFetchRequest<CDNotification>(
+            entityName: "CDNotification"
+        )
+        request.predicate = NSPredicate(format: "id == %@", id)
+        request.fetchLimit = 1
+        return try context.fetch(request).first
+    }
+
+    private func convertNotificationTask(
+        _ entity: CDNotification
+    ) throws -> NotificationTask {
+        guard let statusValue = entity.status,
+              let status = NotificationStatus(rawValue: statusValue)
+        else {
+            throw PersistenceError.invalidNotificationStatus
+        }
+
+        return NotificationTask(
+            id: entity.id ?? "",
+            title: entity.title ?? "",
+            body: entity.body ?? "",
+            dueDate: entity.dueDate ?? Date(),
+            status: status,
+            receivedAt: entity.receivedAt ?? Date()
+        )
+    }
+
 }

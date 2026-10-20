@@ -11,7 +11,7 @@ import Realm
 
 enum RealmMigrationManager {
 
-    private nonisolated static let schemaVersion: UInt64 = 2
+    private nonisolated static let schemaVersion: UInt64 = 3
 
     nonisolated static var configuration: Realm.Configuration {
         Realm.Configuration(
@@ -229,6 +229,66 @@ class RealmService: PersistenceService {
         try realm.write {
             subtaskToUpdate.needToNotify = isEnabled
         }
+    }
+
+    // MARK: - Received notifications
+
+    func getAllNotificationTasks() throws -> [NotificationTask] {
+        realm.objects(RealmNotificationTask.self)
+            .sorted(byKeyPath: "receivedAt", ascending: false)
+            .map(convertNotificationTask)
+    }
+
+    func addNotificationTask(
+        _ notificationTask: NotificationTask
+    ) throws {
+        guard realm.object(
+            ofType: RealmNotificationTask.self,
+            forPrimaryKey: notificationTask.id
+        ) == nil else {
+            return
+        }
+
+        let entity = RealmNotificationTask()
+        entity.id = notificationTask.id
+        entity.title = notificationTask.title
+        entity.body = notificationTask.body
+        entity.dueDate = notificationTask.dueDate
+        entity.status = notificationTask.status.rawValue
+        entity.receivedAt = notificationTask.receivedAt
+
+        try realm.write {
+            realm.add(entity)
+        }
+    }
+
+    func setNotificationTaskStatus(
+        _ status: NotificationStatus,
+        for notificationId: String
+    ) throws {
+        guard let entity = realm.object(
+            ofType: RealmNotificationTask.self,
+            forPrimaryKey: notificationId
+        ) else {
+            throw PersistenceError.notificationTaskNotFound
+        }
+
+        try realm.write {
+            entity.status = status.rawValue
+        }
+    }
+
+    private func convertNotificationTask(
+        _ entity: RealmNotificationTask
+    ) -> NotificationTask {
+        NotificationTask(
+            id: entity.id,
+            title: entity.title,
+            body: entity.body,
+            dueDate: entity.dueDate,
+            status: NotificationStatus(rawValue: entity.status) ?? .pending,
+            receivedAt: entity.receivedAt
+        )
     }
 
 }

@@ -8,27 +8,40 @@
 import UIKit
 
 final class AuthViewController: UIViewController {
-    
+
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
-    
+
     var onAuthorize: ((String, String) -> Void)?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(dismissKeyboard)
+        )
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
     }
     
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+
     @IBAction func saveButtonTapped(_ sender: UIButton) {
-        let email = usernameTextField.text?.trimmingCharacters(in: .whitespaces) ?? ""
-        let password = passwordTextField.text?.trimmingCharacters(in: .whitespaces) ?? ""
-        
+        let email =
+            usernameTextField.text?.trimmingCharacters(in: .whitespaces) ?? ""
+        let password =
+            passwordTextField.text?.trimmingCharacters(in: .whitespaces) ?? ""
+
         guard !email.isEmpty else {
             return
         }
         guard !password.isEmpty else {
             return
         }
-        
+
         onAuthorize?(email, password)
     }
 }

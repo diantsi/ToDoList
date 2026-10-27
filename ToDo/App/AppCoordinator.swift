@@ -12,14 +12,14 @@ final class AppCoordinator {
     private let window: UIWindow
     private let storyboard: UIStoryboard
 
-    private let keychainService: KeychainService
+    private let credentialsRepository: CredentialsRepository
 
     private let authService: AuthService
 
     init(window: UIWindow) {
         self.window = window
         self.storyboard = UIStoryboard(name: "Main", bundle: nil)
-        keychainService = KeychainService()
+        credentialsRepository = CredentialsRepository()
         authService = AuthService()
     }
 
@@ -69,7 +69,7 @@ final class AppCoordinator {
         let credentials = Credentials(username: username, password: password)
         do {
             try await authService.postCredentials(credentials: credentials)
-            try keychainService.saveCredentials(credentials: credentials)
+            try credentialsRepository.saveCredentials(credentials: credentials)
             showMainInterface()
         } catch AuthError.invalidCredentials {
             showError(AuthError.invalidCredentials)
@@ -86,11 +86,11 @@ final class AppCoordinator {
 
     private func attemptAutomaticLogin() async {
         do {
-            let credentials = try keychainService.readCredentials()
+            let credentials = try credentialsRepository.readCredentials()
             try await authService.postCredentials(credentials: credentials)
             print("credentials available")
             showMainInterface()
-        } catch KeychainError.noPassword {
+        } catch KeychainError.noData {
             showLogin()
         } catch AuthError.invalidCredentials {
             showLogin()

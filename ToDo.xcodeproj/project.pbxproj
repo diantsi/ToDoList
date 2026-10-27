@@ -12,6 +12,7 @@
 		9A3E0364307E5752001F195F /* TaskTodo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A3E0361307E5752001F195F /* TaskTodo+CoreDataProperties.swift */; };
 		9A3E0365307E5752001F195F /* SubtaskTodo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A3E035F307E5752001F195F /* SubtaskTodo+CoreDataProperties.swift */; };
 		9A3E0374307EAA19001F195F /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 9A3E0373307EAA19001F195F /* RealmSwift */; };
+		9AA6C0A7308E964000B4AB1B /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 9A3E0373307EAA19001F195F /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -20,6 +21,7 @@
 			dstPath = "";
 			dstSubfolder = Frameworks;
 			files = (
+				9AA6C0A7308E964000B4AB1B /* RealmSwift in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 		};
@@ -178,6 +180,7 @@
 				DEVELOPMENT_TEAM = D85QWSUNYA;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ToDo/Info.plist;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "trust me";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -212,6 +215,7 @@
 				DEVELOPMENT_TEAM = D85QWSUNYA;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ToDo/Info.plist;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "trust me";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

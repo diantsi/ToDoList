@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct TodoSubtask: ReminderItem {
+struct TodoSubtask: ReminderItem, Codable {
     let id: UUID
     var name: String
     var isDone: Bool

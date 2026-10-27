@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct TodoTask : ReminderItem {    
+struct TodoTask: ReminderItem, Codable {
     let id: UUID
     var name: String
     var isDone: Bool
@@ -29,6 +29,12 @@ struct TodoTask : ReminderItem {
         self.subtasks = subtasks
         self.needToNotify = needToNotify
     }
-    
-    
+
+    var hiddenTask: HiddenTask {
+        HiddenTask(
+            id: id,
+            dueDate: dueDate,
+            needToNotify: needToNotify
+        )
+    }
 }

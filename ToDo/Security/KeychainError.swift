@@ -7,7 +7,7 @@
 import Foundation
 
 
-enum KeychainError: Error {
+enum KeychainError: LocalizedError {
     case itemNotFound
     case unexpectedStatus
     case unhandledError(status: OSStatus)

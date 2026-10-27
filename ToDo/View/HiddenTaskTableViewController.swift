@@ -15,52 +15,12 @@ class HiddenTaskTableViewController: UITableViewController {
 
     private let notificationService = UserNotificationsService.shared
 
-    private lazy var lockedView: UIView = {
-        let container = UIView()
-        container.backgroundColor = .systemBackground
-
-        let imageView = UIImageView(
-            image: UIImage(systemName: "lock.fill")
-        )
-        imageView.tintColor = .secondaryLabel
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-
-        let label = UILabel()
-        label.text = "Захищені завдання заблоковані"
-        label.textAlignment = .center
-        label.textColor = .secondaryLabel
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-
-        container.addSubview(imageView)
-        container.addSubview(label)
-
-        NSLayoutConstraint.activate([
-            imageView.centerXAnchor.constraint(
-                equalTo: container.centerXAnchor
-            ),
-            imageView.centerYAnchor.constraint(
-                equalTo: container.centerYAnchor,
-                constant: -24
-            ),
-            imageView.widthAnchor.constraint(equalToConstant: 40),
-            imageView.heightAnchor.constraint(equalToConstant: 40),
-            label.topAnchor.constraint(
-                equalTo: imageView.bottomAnchor,
-                constant: 12
-            ),
-            label.leadingAnchor.constraint(
-                equalTo: container.leadingAnchor,
-                constant: 24
-            ),
-            label.trailingAnchor.constraint(
-                equalTo: container.trailingAnchor,
-                constant: -24
-            ),
-        ])
-
-        return container
+    private lazy var lockedView: LockedView = {
+        let lockedView = LockedView()
+        lockedView.onUnlock = { [weak self] in
+            self?.tryToUnlock()
+        }
+        return lockedView
     }()
 
     override func viewDidLoad() {

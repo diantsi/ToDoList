@@ -25,11 +25,8 @@ final class AuthService {
         let body = try JSONEncoder().encode(credentials)
         request.httpBody = body
 
-        guard
-            let (_, response) = try? await URLSession.shared.data(for: request)
-        else {
-            throw AuthError.cannotDoRequest
-        }
+        let (_, response) = try await URLSession.shared.data(for: request)
+
         guard let response = response as? HTTPURLResponse else {
             throw AuthError.invalidResponse
         }
@@ -44,11 +41,4 @@ final class AuthService {
     }
 }
 
-enum AuthError: Error {
-    case invalidUrl
-    case cannotDoRequest
-    case invalidCredentials
-    case serverUnavailable
-    case unexpectedResponse(statusCode: Int)
-    case invalidResponse
-}
+

@@ -147,14 +147,14 @@ class CoreDataService: PersistenceService {
         )
     }
 
-    func deleteTask(_ task: TodoTask) throws {
-        let task = try fetchTask(task.id)
+    func deleteTask(id: UUID) throws {
+        let task = try fetchTask(id)
         context.delete(task)
         try saveContext()
     }
 
-    func toggleTaskDone(_ task: TodoTask) throws {
-        let task = try fetchTask(task.id)
+    func toggleTaskDone(id: UUID) throws {
+        let task = try fetchTask(id)
         task.isDone.toggle()
         try saveContext()
     }
@@ -168,14 +168,14 @@ class CoreDataService: PersistenceService {
         try saveContext()
     }
 
-    func deleteSubtask(_ subtask: TodoSubtask) throws {
-        let subtask = try fetchSubtask(subtask.id)
+    func deleteSubtask(id: UUID) throws {
+        let subtask = try fetchSubtask(id)
         context.delete(subtask)
         try saveContext()
     }
 
-    func toggleSubtaskDone(_ subtask: TodoSubtask) throws {
-        let subtask = try fetchSubtask(subtask.id)
+    func toggleSubtaskDone(id: UUID) throws {
+        let subtask = try fetchSubtask(id)
         subtask.isDone.toggle()
         try saveContext()
     }

@@ -70,12 +70,12 @@ class RealmService: PersistenceService {
 
     }
 
-    func deleteTask(_ task: TodoTask) throws {
+    func deleteTask(id: UUID) throws {
         guard
             let taskToDelete =
                 realm
                 .objects(RealmTask.self)
-                .where({ $0.id == task.id })
+                .where({ $0.id == id })
                 .first
         else {
             throw PersistenceError.taskNotFound
@@ -86,12 +86,12 @@ class RealmService: PersistenceService {
         }
     }
 
-    func toggleTaskDone(_ task: TodoTask) throws {
+    func toggleTaskDone(id: UUID) throws {
         guard
             let taskToUpdate =
                 realm
                 .objects(RealmTask.self)
-                .where({ $0.id == task.id })
+                .where({ $0.id == id })
                 .first
         else {
             throw PersistenceError.taskNotFound
@@ -156,12 +156,12 @@ class RealmService: PersistenceService {
         }
     }
 
-    func deleteSubtask(_ subtask: TodoSubtask) throws {
+    func deleteSubtask(id: UUID) throws {
         guard
             let subtaskToDelete =
                 realm
                 .objects(RealmSubtask.self)
-                .where({ $0.id == subtask.id })
+                .where({ $0.id == id })
                 .first
         else {
             throw PersistenceError.subtaskNotFound
@@ -171,12 +171,12 @@ class RealmService: PersistenceService {
         }
     }
 
-    func toggleSubtaskDone(_ subtask: TodoSubtask) throws {
+    func toggleSubtaskDone(id: UUID) throws {
         guard
             let subtaskToUpdate =
                 realm
                 .objects(RealmSubtask.self)
-                .where({ $0.id == subtask.id })
+                .where({ $0.id == id })
                 .first
         else {
             throw PersistenceError.subtaskNotFound

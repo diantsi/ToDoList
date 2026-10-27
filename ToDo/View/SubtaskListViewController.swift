@@ -116,17 +116,8 @@ final class SubtaskListViewController: UIViewController,
     }
     
     private func toggleSubtask(id: UUID) {
-        guard
-            let index = subtasks.firstIndex(
-                where: { $0.id == id }
-            )
-        else {
-            return
-        }
-        let subtask = subtasks[index]
-        
         do {
-            try persistenceService.toggleSubtaskDone(subtask)
+            try persistenceService.toggleSubtaskDone(id: id)
             loadSubtasks()
         } catch {
             showToggleError(error)
@@ -194,7 +185,7 @@ final class SubtaskListViewController: UIViewController,
         let subtask = subtasks[indexPath.row]
 
         do {
-            try persistenceService.deleteSubtask(subtask)
+            try persistenceService.deleteSubtask(id: subtask.id)
             notificationService.cancelNotification(with: subtask)
             subtasks.remove(at: indexPath.row)
             tableView.deleteRows(

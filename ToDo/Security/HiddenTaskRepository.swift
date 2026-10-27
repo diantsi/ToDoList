@@ -12,10 +12,12 @@ final class HiddenTaskRepository {
 
     let keychainService: KeychainService
     let biometricService: BiometricAuthService
+    let persistenceService: PersistenceService
     
     init() {
         keychainService = KeychainService(service: service)
         biometricService = BiometricAuthService()
+        persistenceService = PersistenceServiceProvider.shared
     }
 
     func saveTodo(todo: TodoTask) throws {
@@ -34,6 +36,7 @@ final class HiddenTaskRepository {
     }
     
     func deleteTodo(id: UUID) throws {
+        try persistenceService.deleteTask(id: id)
         try keychainService.delete(account: id.uuidString)
     }
 

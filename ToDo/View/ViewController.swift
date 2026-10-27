@@ -83,17 +83,8 @@ class ViewController: UITableViewController {
 
 
     private func toggleTask(id: UUID) {
-        guard
-            let index = tasks.firstIndex(
-                where: { $0.id == id }
-            )
-        else {
-            return
-        }
-        let task = tasks[index]
-
         do {
-            try persistenceService.toggleTaskDone(task)
+            try persistenceService.toggleTaskDone(id: id)
             loadTasks()
         } catch {
             showToggleError(error)
@@ -161,7 +152,7 @@ class ViewController: UITableViewController {
         let task = tasks[indexPath.row]
 
         do {
-            try persistenceService.deleteTask(task)
+            try persistenceService.deleteTask(id: task.id)
             notificationService.cancelNotification(with: task)
             for subtask in task.subtasks {
                 notificationService.cancelNotification(with: subtask)

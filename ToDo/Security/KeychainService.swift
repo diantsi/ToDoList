@@ -8,25 +8,27 @@ import Foundation
 
 final class KeychainService {
 
-    private let service = "todo.task.service"
+    private let service: String
 
-    func saveCredentials(credentials: Credentials) throws {
+    init(service: String = "todo.service") {
+        self.service = service
+    }
+
+    func save(data: Data, account: String) throws {
         do {
-            try updateCredentialsInKeychain(credentials: credentials)
+            try update(data: data, account: account)
         } catch KeychainError.itemNotFound {
-            try addCredentialstoKeychain(credentials: credentials)
+            try add(data: data, account: account)
         }
 
     }
 
-    func addCredentialstoKeychain(credentials: Credentials) throws {
-        let account = credentials.username
-        let password = Data(credentials.password.utf8)
+    private func add(data: Data, account: String) throws {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrAccount as String: account,
             kSecAttrService as String: service,
-            kSecValueData as String: password,
+            kSecValueData as String: data,
         ]
 
         let status = SecItemAdd(query as CFDictionary, nil)
@@ -36,17 +38,15 @@ final class KeychainService {
 
     }
 
-    func updateCredentialsInKeychain(credentials: Credentials) throws {
+    private func update(data: Data, account: String) throws {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
+            kSecAttrAccount as String: account,
         ]
 
-        let account = credentials.username
-        let password = Data(credentials.password.utf8)
         let attributes: [String: Any] = [
-            kSecAttrAccount as String: account,
-            kSecValueData as String: password,
+            kSecValueData as String: data
         ]
 
         let status = SecItemUpdate(
@@ -62,12 +62,21 @@ final class KeychainService {
 
     }
 
-    func readCredentials() throws -> Credentials {
+    func delete(account: String) throws {
+        let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
+                                    kSecAttrService as String: service,
+                                    kSecAttrAccount as String: account]
+                
+        let status = SecItemDelete(query as CFDictionary)
+        guard status == errSecSuccess || status == errSecItemNotFound else { throw KeychainError.unhandledError(status: status) }
+    }
+    
+    func read(account: String) throws -> Data {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
+            kSecAttrAccount as String: account as AnyObject,
             kSecMatchLimit as String: kSecMatchLimitOne,
-            kSecReturnAttributes as String: true,
             kSecReturnData as String: true,
         ]
 
@@ -78,21 +87,57 @@ final class KeychainService {
         )
 
         guard status != errSecItemNotFound else {
-            throw KeychainError.noPassword
+            throw KeychainError.noData
         }
 
         guard status == errSecSuccess else {
             throw KeychainError.unexpectedStatus
         }
 
-        guard let item = itemCopy as? [String: Any],
-            let passwordData = item[kSecValueData as String] as? Data,
-            let password = String(data: passwordData, encoding: .utf8),
-            let account = item[kSecAttrAccount as String] as? String
+        guard let item = itemCopy as? Data
         else {
-            throw KeychainError.cannotReturnPasswordData
+            throw KeychainError.cannotReturnData
+        }
+        return item
+    }
+
+    func readAll() throws -> [(account: String, data: Data)] {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecMatchLimit as String: kSecMatchLimitAll,
+            kSecReturnAttributes as String: true,
+            kSecReturnData as String: true,
+        ]
+
+        var results: CFTypeRef?
+        let status = SecItemCopyMatching(
+            query as CFDictionary,
+            &results
+        )
+
+        guard status != errSecItemNotFound else {
+            return []
         }
 
-        return Credentials(username: account, password: password)
+        guard status == errSecSuccess else {
+            throw KeychainError.unexpectedStatus
+        }
+
+        guard let items = results as? [[String: Any]]
+        else {
+            throw KeychainError.cannotReturnData
+        }
+        
+        return try items.map { item in
+            guard let account = item[kSecAttrAccount as String] as? String,
+                let data = item[kSecValueData as String] as? Data
+            else {
+                throw KeychainError.cannotReturnData
+            }
+            return (account: account, data: data)
+        }
     }
+    
+
 }

@@ -8,45 +8,6 @@ import Realm
 //
 import RealmSwift
 
-enum RealmMigrationManager {
-
-    private nonisolated static let schemaVersion: UInt64 = 4
-
-    nonisolated static var configuration: Realm.Configuration {
-        Realm.Configuration(
-            schemaVersion: schemaVersion,
-            migrationBlock: migrate,
-            objectTypes: [
-                RealmTask.self,
-                RealmSubtask.self,
-                RealmNotificationTask.self,
-            ]
-        )
-    }
-
-    private nonisolated static func migrate(
-        migration: Migration,
-        oldSchemaVersion: UInt64
-    ) {
-        if oldSchemaVersion < 1 {
-            migration.enumerateObjects(
-                ofType: RealmTask.className()
-            ) { _, newObject in
-                newObject?["needToNotify"] = false
-            }
-        }
-
-        if oldSchemaVersion < 2 {
-            migration.enumerateObjects(
-                ofType: RealmSubtask.className()
-            ) { _, newObject in
-                newObject?["dueDate"] = Date()
-                newObject?["needToNotify"] = false
-            }
-        }
-    }
-}
-
 class RealmService: PersistenceService {
 
     private let realm: Realm
@@ -62,11 +23,13 @@ class RealmService: PersistenceService {
         self.realm = realm
     }
 
-    func getAllTasks() throws -> [TodoTask] {
-        let taskEntities = realm.objects(RealmTask.self).sorted(
-            byKeyPath: "dueDate",
-            ascending: true
-        )
+    func getAllTasks(isHidden: Bool) throws -> [TodoTask] {
+        let taskEntities = realm.objects(RealmTask.self)
+            .filter("isHidden == %@", isHidden)
+            .sorted(
+                byKeyPath: "dueDate",
+                ascending: true
+            )
         return taskEntities.map(convertTask)
     }
 
@@ -78,7 +41,8 @@ class RealmService: PersistenceService {
             isDone: realmTask.isDone,
             dueDate: realmTask.dueDate,
             subtasks: subtasks,
-            needToNotify: realmTask.needToNotify
+            needToNotify: realmTask.needToNotify,
+            isHidden: realmTask.isHidden
         )
     }
 
@@ -99,6 +63,7 @@ class RealmService: PersistenceService {
         taskEntity.isDone = task.isDone
         taskEntity.dueDate = task.dueDate
         taskEntity.needToNotify = task.needToNotify
+        taskEntity.isHidden = task.isHidden
         try realm.write {
             realm.add(taskEntity)
         }

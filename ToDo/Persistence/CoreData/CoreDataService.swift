@@ -37,8 +37,8 @@ class CoreDataService: PersistenceService {
     }
 
     // MARK: - PersistenceService methods
-    func getAllTasks() throws -> [TodoTask] {
-        return try fetchTasks().map(convertTask)
+    func getAllTasks(isHidden: Bool) throws -> [TodoTask] {
+        return try fetchTasks(isHidden: isHidden).map(convertTask)
     }
     
     func getSubtasks(for taskId: UUID) throws -> [TodoSubtask] {
@@ -49,8 +49,12 @@ class CoreDataService: PersistenceService {
         return try entities.map(convertSubtask)
     }
 
-    private func fetchTasks() throws -> [TaskTodo] {
+    private func fetchTasks(isHidden: Bool) throws -> [TaskTodo] {
         let fetchRequest = TaskTodo.fetchRequest()
+        fetchRequest.predicate = NSPredicate(
+            format: "isHidden == %@",
+            NSNumber(value: isHidden)
+        )
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(keyPath: \TaskTodo.dueDate, ascending: true)
         ]
@@ -88,6 +92,7 @@ class CoreDataService: PersistenceService {
         newTask.dueDate = task.dueDate
         newTask.isDone = task.isDone
         newTask.needToNotify = task.needToNotify
+        newTask.isHidden = task.isHidden
         
         try saveContext()
 
@@ -108,7 +113,8 @@ class CoreDataService: PersistenceService {
             isDone: cdEntity.isDone,
             dueDate: cdEntity.dueDate ?? Date(),
             subtasks: subtasks,
-            needToNotify: cdEntity.needToNotify
+            needToNotify: cdEntity.needToNotify,
+            isHidden: cdEntity.isHidden
         )
 
     }

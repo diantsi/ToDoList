@@ -36,7 +36,7 @@ class ViewController: UITableViewController {
 
     private func loadTasks() {
         do {
-            tasks = try persistenceService.getAllTasks()
+            tasks = try persistenceService.getAllTasks(isHidden: false)
             tableView.reloadData()
         } catch {
             print("Failed to fetch tasks: \(error.localizedDescription)")

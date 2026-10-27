@@ -15,4 +15,5 @@ final class RealmTask: Object {
     @Persisted var dueDate: Date
     @Persisted var subtasks: List<RealmSubtask>
     @Persisted var needToNotify: Bool
+    @Persisted var isHidden: Bool = false
 }

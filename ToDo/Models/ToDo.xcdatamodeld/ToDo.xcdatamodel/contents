@@ -25,6 +25,7 @@
         <attribute name="dueDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isDone" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isHidden" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="needToNotify" attributeType="Boolean" usesScalarValueType="YES"/>
         <relationship name="subtasks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SubtaskTodo" inverseName="task" inverseEntity="SubtaskTodo"/>

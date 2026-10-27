@@ -2,7 +2,7 @@
 //  TaskTodo+CoreDataProperties.swift
 //  ToDo
 //
-//  Created by Діана Цісарук on 17.10.2026.
+//  Created by Діана Цісарук on 27.10.2026.
 //
 //
 
@@ -23,6 +23,7 @@ extension TaskTodo {
     @NSManaged nonisolated public var isDone: Bool
     @NSManaged nonisolated public var name: String?
     @NSManaged nonisolated public var needToNotify: Bool
+    @NSManaged nonisolated public var isHidden: Bool
     @NSManaged nonisolated public var subtasks: NSSet?
 
 }

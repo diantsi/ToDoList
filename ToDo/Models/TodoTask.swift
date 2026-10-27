@@ -13,6 +13,7 @@ struct TodoTask: ReminderItem, Codable {
     var dueDate: Date
     var subtasks: [TodoSubtask]
     var needToNotify: Bool = false
+    var isHidden: Bool = false
 
     init(
         id: UUID = UUID(),
@@ -20,7 +21,8 @@ struct TodoTask: ReminderItem, Codable {
         isDone: Bool = false,
         dueDate: Date,
         subtasks: [TodoSubtask] = [],
-        needToNotify: Bool = false
+        needToNotify: Bool = false,
+        isHidden: Bool = false
     ) {
         self.id = id
         self.name = name
@@ -28,13 +30,18 @@ struct TodoTask: ReminderItem, Codable {
         self.dueDate = dueDate
         self.subtasks = subtasks
         self.needToNotify = needToNotify
+        self.isHidden = isHidden
     }
 
-    var hiddenTask: HiddenTask {
-        HiddenTask(
+    var hiddenTask: TodoTask {
+        TodoTask(
             id: id,
+            name: "приховане повідомлення",
+            isDone: isDone,
             dueDate: dueDate,
-            needToNotify: needToNotify
+            subtasks: subtasks,
+            needToNotify: needToNotify,
+            isHidden: true
         )
     }
 }

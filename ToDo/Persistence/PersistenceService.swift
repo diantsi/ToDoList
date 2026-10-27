@@ -9,7 +9,7 @@ import Foundation
 protocol PersistenceService {
     
     // MARK: - Tasks
-    func getAllTasks() throws -> [TodoTask]
+    func getAllTasks(isHidden: Bool) throws -> [TodoTask]
     func addTask(_ task: TodoTask) throws
     func deleteTask(_ task: TodoTask) throws
     func toggleTaskDone(_ task: TodoTask) throws
@@ -33,5 +33,4 @@ protocol PersistenceService {
         for notificationId: String
     ) throws
 }
-
 

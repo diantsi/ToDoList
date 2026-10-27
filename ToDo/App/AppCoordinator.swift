@@ -32,7 +32,7 @@ final class AppCoordinator {
 
     func showLoading() {
         let controller = storyboard.instantiateViewController(
-            withIdentifier: "MainTabBarController"
+            withIdentifier: "LoadingViewController"
         )
 
         window.rootViewController = controller

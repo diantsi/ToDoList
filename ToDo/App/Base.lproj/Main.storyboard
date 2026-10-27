@@ -576,6 +576,44 @@
             </objects>
             <point key="canvasLocation" x="2628" y="-335"/>
         </scene>
+        <!--View Controller-->
+        <scene sceneID="m80-eu-Wo1">
+            <objects>
+                <viewController storyboardIdentifier="LoadingViewController" id="V6e-Wm-J4Q" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="nfp-BG-yGc">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="g5i-AK-Ses">
+                                <rect key="frame" x="119.6666666666667" y="378.33333333333331" width="154" height="145.33333333333331"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" verticalHuggingPriority="251" image="figure.cooldown" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Bxj-tE-d2g">
+                                        <rect key="frame" x="0.0" y="-1.3333333333333286" width="154" height="102.66666666666666"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="100" id="yMG-v8-6DG"/>
+                                        </constraints>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="я завантажуюсь" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="sJ9-sd-oTv">
+                                        <rect key="frame" x="0.0" y="119.99999999999999" width="154" height="25.333333333333329"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="wsw-sD-3FA"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="g5i-AK-Ses" firstAttribute="centerY" secondItem="wsw-sD-3FA" secondAttribute="centerY" id="aEw-CI-Z5g"/>
+                            <constraint firstItem="g5i-AK-Ses" firstAttribute="centerX" secondItem="wsw-sD-3FA" secondAttribute="centerX" id="vB1-qc-rQd"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LpV-sD-5x6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2671" y="1626"/>
+        </scene>
         <!--Auth View Controller-->
         <scene sceneID="IJr-36-Hvi">
             <objects>
@@ -695,6 +733,7 @@
     <resources>
         <image name="chevron.forward" catalog="system" width="93" height="128"/>
         <image name="eye.slash.circle.fill" catalog="system" width="128" height="128"/>
+        <image name="figure.cooldown" catalog="system" width="103" height="128"/>
         <image name="square" catalog="system" width="128" height="119"/>
         <image name="text.pad.header.badge.plus" catalog="system" width="128" height="113"/>
         <image name="tray" catalog="system" width="128" height="91"/>

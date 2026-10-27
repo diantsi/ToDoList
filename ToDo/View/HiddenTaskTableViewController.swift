@@ -12,7 +12,6 @@ class HiddenTaskTableViewController : UITableViewController {
     var hiddenTasks : [TodoTask] = []
     
     let todoRepository = HiddenTaskRepository()
-    let notificationService = UserNotificationsService.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,37 +72,22 @@ class HiddenTaskTableViewController : UITableViewController {
                 dueDate: dueDate,
                 needToNotify: needToNotify
             )
-            
-            let hidden = task.hiddenTask
-            
-            do {
-                try todoRepository.saveTodo(todo: task)
-            } catch {
-                showError(error)
-            }
-            
-            if needToNotify {
-                sendNotification(for: hidden)
-            }
-            
-            tryToUnlock()
+                        
+            saveTask(task: task)
 
         }
     }
     
-    private func sendNotification(for reminderItem: any ReminderItem) {
-        Task { [weak self] in
-            guard let self else {
-                return
-            }
-
+    private func saveTask(task: TodoTask){
+        Task {
             do {
-                try await notificationService.sendNotification(
-                    with: reminderItem
-                )
+                try await todoRepository.saveTodo(todo: task)
             } catch {
                 showError(error)
             }
+            
+            
+            tryToUnlock()
         }
     }
     

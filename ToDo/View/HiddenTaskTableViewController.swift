@@ -12,6 +12,8 @@ class HiddenTaskTableViewController : UITableViewController {
     var hiddenTasks : [TodoTask] = []
     
     let todoRepository = HiddenTaskRepository()
+
+    private let notificationService = UserNotificationsService.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +35,34 @@ class HiddenTaskTableViewController : UITableViewController {
         }
         let hiddenTask = hiddenTasks[indexPath.row]
         cell.configure(with: hiddenTask)
+
+        cell.onToggle = { [weak self] in
+            self?.toggleTask(id: hiddenTask.id)
+        }
+
         return cell
+    }
+
+    private func toggleTask(id: UUID) {
+        do {
+            try todoRepository.toggleTodoDone(id: id)
+
+            guard let index = hiddenTasks.firstIndex(where: { $0.id == id })
+            else {
+                return
+            }
+
+            hiddenTasks[index].isDone.toggle()
+            tableView.reloadRows(
+                at: [IndexPath(row: index, section: 0)],
+                with: .automatic
+            )
+        } catch {
+            showError(
+                error,
+                title: "Не вдалося оновити завдання"
+            )
+        }
     }
     
     private func tryToUnlock(){
@@ -42,8 +71,28 @@ class HiddenTaskTableViewController : UITableViewController {
                 hiddenTasks = try await todoRepository.readTodos()
                 tableView.reloadData()
             } catch {
-                showError(error)
+                showError(error, title: "Немає доступу")
             }
+        }
+    }
+
+    override func tableView(
+        _ tableView: UITableView,
+        commit editingStyle: UITableViewCell.EditingStyle,
+        forRowAt indexPath: IndexPath
+    ) {
+        guard editingStyle == .delete else {
+            return
+        }
+
+        let task = hiddenTasks[indexPath.row]
+
+        do {
+            try todoRepository.deleteTodo(for: task)
+            hiddenTasks.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        } catch {
+            showError(error, title: "Не вдалося видалити")
         }
     }
     
@@ -83,7 +132,7 @@ class HiddenTaskTableViewController : UITableViewController {
             do {
                 try await todoRepository.saveTodo(todo: task)
             } catch {
-                showError(error)
+                showError(error, title: "Не вдалося зберегти")
             }
             
             
@@ -91,9 +140,9 @@ class HiddenTaskTableViewController : UITableViewController {
         }
     }
     
-    private func showError(_ error: Error) {
+    private func showError(_ error: Error, title: String) {
         let alert = UIAlertController(
-            title: "Немає доступу",
+            title: title,
             message: error.localizedDescription,
             preferredStyle: .alert
         )

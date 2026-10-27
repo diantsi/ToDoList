@@ -62,9 +62,18 @@ final class HiddenTaskRepository {
         }
     }
     
-    func deleteTodo(id: UUID) throws {
+    func deleteTodo(for todoTask: TodoTask) throws {
+        let id = todoTask.id
         try persistenceService.deleteTask(id: id)
         try keychainService.delete(account: id.uuidString)
+        notificationService.cancelNotification(with: todoTask)
+        for subtask in todoTask.subtasks {
+            notificationService.cancelNotification(with: subtask)
+        }
+    }
+
+    func toggleTodoDone(id: UUID) throws {
+        try persistenceService.toggleTaskDone(id: id)
     }
 
 }

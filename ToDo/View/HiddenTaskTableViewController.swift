@@ -7,30 +7,119 @@
 
 import UIKit
 
-class HiddenTaskTableViewController : UITableViewController {
-    
-    var hiddenTasks : [TodoTask] = []
-    
+class HiddenTaskTableViewController: UITableViewController {
+
+    var hiddenTasks: [TodoTask] = []
+
     let todoRepository = HiddenTaskRepository()
 
     private let notificationService = UserNotificationsService.shared
-    
+
+    private lazy var lockedView: UIView = {
+        let container = UIView()
+        container.backgroundColor = .systemBackground
+
+        let imageView = UIImageView(
+            image: UIImage(systemName: "lock.fill")
+        )
+        imageView.tintColor = .secondaryLabel
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+
+        let label = UILabel()
+        label.text = "Захищені завдання заблоковані"
+        label.textAlignment = .center
+        label.textColor = .secondaryLabel
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+
+        container.addSubview(imageView)
+        container.addSubview(label)
+
+        NSLayoutConstraint.activate([
+            imageView.centerXAnchor.constraint(
+                equalTo: container.centerXAnchor
+            ),
+            imageView.centerYAnchor.constraint(
+                equalTo: container.centerYAnchor,
+                constant: -24
+            ),
+            imageView.widthAnchor.constraint(equalToConstant: 40),
+            imageView.heightAnchor.constraint(equalToConstant: 40),
+            label.topAnchor.constraint(
+                equalTo: imageView.bottomAnchor,
+                constant: 12
+            ),
+            label.leadingAnchor.constraint(
+                equalTo: container.leadingAnchor,
+                constant: 24
+            ),
+            label.trailingAnchor.constraint(
+                equalTo: container.trailingAnchor,
+                constant: -24
+            ),
+        ])
+
+        return container
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appWillResignActive),
+            name: UIApplication.willResignActiveNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appWillEnterForeground),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
+    }
+
+    @objc private func appWillResignActive() {
+        lock()
+    }
+
+    @objc private func appWillEnterForeground() {
+        guard viewIfLoaded?.window != nil else {
+            return
+        }
+
+        tryToUnlock()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         tryToUnlock()
     }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        lock()
+    }
+
+    override func tableView(
+        _ tableView: UITableView,
+        numberOfRowsInSection section: Int
+    ) -> Int {
         return hiddenTasks.count
     }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "hidden_cell", for: indexPath) as? HiddenCell else {
+
+    override func tableView(
+        _ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
+        guard
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: "hidden_cell",
+                for: indexPath
+            ) as? HiddenCell
+        else {
             return UITableViewCell()
         }
         let hiddenTask = hiddenTasks[indexPath.row]
@@ -64,16 +153,25 @@ class HiddenTaskTableViewController : UITableViewController {
             )
         }
     }
-    
-    private func tryToUnlock(){
+
+    private func tryToUnlock() {
+        lock()
         Task {
             do {
                 hiddenTasks = try await todoRepository.readTodos()
+                tableView.backgroundView = nil
                 tableView.reloadData()
             } catch {
+                lock()
                 showError(error, title: "Немає доступу")
             }
         }
+    }
+
+    private func lock() {
+        hiddenTasks.removeAll()
+        tableView.backgroundView = lockedView
+        tableView.reloadData()
     }
 
     override func tableView(
@@ -95,7 +193,7 @@ class HiddenTaskTableViewController : UITableViewController {
             showError(error, title: "Не вдалося видалити")
         }
     }
-    
+
     override func prepare(
         for segue: UIStoryboardSegue,
         sender: Any?
@@ -121,25 +219,24 @@ class HiddenTaskTableViewController : UITableViewController {
                 dueDate: dueDate,
                 needToNotify: needToNotify
             )
-                        
+
             saveTask(task: task)
 
         }
     }
-    
-    private func saveTask(task: TodoTask){
+
+    private func saveTask(task: TodoTask) {
         Task {
             do {
                 try await todoRepository.saveTodo(todo: task)
             } catch {
                 showError(error, title: "Не вдалося зберегти")
             }
-            
-            
+
             tryToUnlock()
         }
     }
-    
+
     private func showError(_ error: Error, title: String) {
         let alert = UIAlertController(
             title: title,

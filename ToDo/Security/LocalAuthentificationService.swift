@@ -9,13 +9,9 @@ import LocalAuthentication
 
 final class BiometricAuthService {
 
-    private let context: LAContext
-    
-    init() {
-        context = LAContext()
-    }
 
     func authenticate() async throws  {
+        let context = LAContext()
         var error: NSError?
 
         guard

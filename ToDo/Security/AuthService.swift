@@ -8,7 +8,7 @@ import Foundation
 
 final class AuthService {
 
-    private var serverPath: String = "http://127.0.0.1:8080"
+    private var serverPath: String = "http://192.168.88.215:8080"
 
     func postCredentials(credentials: Credentials) async throws {
         guard let url = URL(string: serverPath + "/auth")

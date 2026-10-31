@@ -89,22 +89,38 @@ class HiddenTaskTableViewController: UITableViewController {
             self?.toggleTask(id: hiddenTask.id)
         }
 
+        cell.onDelete = { [weak self] in
+            self?.deleteTask(id: hiddenTask.id)
+        }
+
         return cell
     }
 
     private func toggleTask(id: UUID) {
+        guard
+            let index = hiddenTasks.firstIndex(where: { $0.id == id })
+        else {
+            return
+        }
+
+        let newIsDone = !hiddenTasks[index].isDone
+
         do {
             try todoRepository.toggleTodoDone(id: id)
 
-            guard let index = hiddenTasks.firstIndex(where: { $0.id == id })
-            else {
-                return
-            }
-
-            hiddenTasks[index].isDone.toggle()
+            hiddenTasks[index].isDone = newIsDone
             tableView.reloadRows(
                 at: [IndexPath(row: index, section: 0)],
-                with: .automatic
+                with: UIAccessibility.isReduceMotionEnabled
+                    ? .none
+                    : .automatic
+            )
+
+            UIAccessibility.post(
+                notification: .announcement,
+                argument: newIsDone
+                    ? "завдання позначено виконаним"
+                    : "завдання позначено невиконаним"
             )
         } catch {
             showError(
@@ -143,12 +159,33 @@ class HiddenTaskTableViewController: UITableViewController {
             return
         }
 
-        let task = hiddenTasks[indexPath.row]
+        deleteTask(id: hiddenTasks[indexPath.row].id)
+    }
+
+    private func deleteTask(id: UUID) {
+        guard
+            let index = hiddenTasks.firstIndex(where: { $0.id == id })
+        else {
+            return
+        }
+
+        let indexPath = IndexPath(row: index, section: 0)
+        let task = hiddenTasks[index]
 
         do {
             try todoRepository.deleteTodo(for: task)
-            hiddenTasks.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
+            hiddenTasks.remove(at: index)
+            tableView.deleteRows(
+                at: [indexPath],
+                with: UIAccessibility.isReduceMotionEnabled
+                    ? .none
+                    : .automatic
+            )
+
+            UIAccessibility.post(
+                notification: .announcement,
+                argument: "Захищене завдання видалено"
+            )
         } catch {
             showError(error, title: "Не вдалося видалити")
         }

@@ -12,7 +12,7 @@ class ViewController: UITableViewController {
     var persistenceService: any PersistenceService!
     private var tasks: [TodoTask] = []
 
-    private var notificationService : UserNotificationsService {
+    private var notificationService: UserNotificationsService {
         return UserNotificationsService.shared
     }
 
@@ -77,18 +77,48 @@ class ViewController: UITableViewController {
             self?.toggleTask(id: task.id)
         }
 
+        cell.onDelete = { [weak self] in
+            self?.deleteTask(id: task.id)
+        }
+
         return cell
     }
     
 
 
     private func toggleTask(id: UUID) {
+        guard
+            let index = tasks.firstIndex(where: { $0.id == id })
+        else {
+            return
+        }
+
+        let newIsDone = !tasks[index].isDone
+
         do {
             try persistenceService.toggleTaskDone(id: id)
-            loadTasks()
+
+            tasks[index].isDone = newIsDone
+            reloadTask(at: index)
+
+            UIAccessibility.post(
+                notification: .announcement,
+                argument: newIsDone
+                    ? "Завдання позначено виконаним"
+                    : "Завдання позначено невиконаним"
+            )
         } catch {
             showToggleError(error)
         }
+    }
+
+    private func reloadTask(at index: Int) {
+        tableView.reloadRows(
+            at: [IndexPath(row: index, section: 0)],
+            with: UIAccessibility.isReduceMotionEnabled
+                ? .none
+                : .automatic
+        )
     }
 
     private func showToggleError(_ error: Error) {
@@ -149,18 +179,36 @@ class ViewController: UITableViewController {
             return
         }
 
-        let task = tasks[indexPath.row]
+        deleteTask(id: tasks[indexPath.row].id)
+    }
+
+    private func deleteTask(id: UUID) {
+        guard
+            let index = tasks.firstIndex(where: { $0.id == id })
+        else {
+            return
+        }
+
+        let indexPath = IndexPath(row: index, section: 0)
+        let task = tasks[index]
 
         do {
-            try persistenceService.deleteTask(id: task.id)
+            try persistenceService.deleteTask(id: id)
             notificationService.cancelNotification(with: task)
             for subtask in task.subtasks {
                 notificationService.cancelNotification(with: subtask)
             }
-            tasks.remove(at: indexPath.row)
+            tasks.remove(at: index)
             tableView.deleteRows(
                 at: [indexPath],
-                with: .automatic
+                with: UIAccessibility.isReduceMotionEnabled
+                    ? .none
+                    : .automatic
+            )
+
+            UIAccessibility.post(
+                notification: .announcement,
+                argument: "Завдання видалено"
             )
         } catch {
             let alert = UIAlertController(
@@ -177,8 +225,10 @@ class ViewController: UITableViewController {
         }
     }
     
-    override func tableView( _ tableView: UITableView,
-                             didSelectRowAt indexPath: IndexPath) {
+    override func tableView(
+        _ tableView: UITableView,
+        didSelectRowAt indexPath: IndexPath
+    ) {
         let task = tasks[indexPath.row]
         performSegue(withIdentifier: "ShowSubtasks", sender: task)
     }

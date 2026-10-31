@@ -7,7 +7,7 @@
 
 import UIKit
 
-class InboxCell: UITableViewCell {
+final class InboxCell: UITableViewCell {
 
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var bodyLabel: UILabel!
@@ -16,26 +16,54 @@ class InboxCell: UITableViewCell {
     func configure(with notification: NotificationTask) {
         titleLabel.text = notification.title
         bodyLabel.text = notification.body
-        receivedAtLabel.text = notification.receivedAt.formatted(
+        let receivedAt = notification.receivedAt.formatted(
             date: .numeric,
             time: .shortened
         )
-        contentView.backgroundColor = backgroundColor(
+        receivedAtLabel.text = receivedAt
+
+        let presentation = presentation(
             for: notification.status
         )
-    }
 
-    private func backgroundColor(
+        contentView.backgroundColor = presentation.color
+        
+        accessibilityLabel = [
+            notification.title,
+            notification.body,
+            "Надіслано \(notification.receivedAt.voiceOverFormatted)",
+        ]
+        .filter { !$0.isEmpty }
+        .joined(separator: ". ")
+        accessibilityValue = presentation.accessibilityValue
+        accessibilityTraits = .staticText
+    }
+    
+
+    private func presentation(
         for status: NotificationStatus
-    ) -> UIColor {
+    ) -> (
+        color: UIColor,
+        accessibilityValue: String
+    ) {
         switch status {
         case .accepted:
-            return UIColor.systemGreen.withAlphaComponent(0.25)
+            return (
+                UIColor.systemGreen.withAlphaComponent(0.25),
+                "Статус: прийнято"
+            )
         case .declined:
-            return UIColor.systemRed.withAlphaComponent(0.25)
+            return (
+                UIColor.systemRed.withAlphaComponent(0.25),
+                "Статус: відхилено"
+            )
         case .pending:
-            return .systemBackground
+            return (
+                .systemBackground,
+                "Статус: очікує підтвердження"
+            )
         }
     }
 
+   
 }

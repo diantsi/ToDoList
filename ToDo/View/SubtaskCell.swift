@@ -16,6 +16,7 @@ final class SubtaskCell: UITableViewCell {
 
     var onToggle: (() -> Void)?
     var onNotificationChange: ((Bool) -> Void)?
+    var onDelete: (() -> Void)?
 
     func configure(with subtask: TodoSubtask) {
         nameLabel.text = subtask.name
@@ -25,10 +26,54 @@ final class SubtaskCell: UITableViewCell {
         )
         notificationSwitch.isOn = subtask.needToNotify
         configureDoneButton(isDone: subtask.isDone)
+
+        configureAccessibility(with: subtask)
+    }
+
+    private func configureAccessibility(with subtask: TodoSubtask) {
+        isAccessibilityElement = true
+
+        accessibilityLabel =
+            "Підзавдання \(subtask.name). "
+            + "Термін виконання \(subtask.dueDate.voiceOverFormatted)"
+
+        accessibilityValue = [
+            subtask.isDone ? "Виконано" : "Не виконано",
+            subtask.needToNotify
+                ? "Сповіщення увімкнені"
+                : "Сповіщення вимкнені",
+        ].joined(separator: ". ")
+
+        accessibilityCustomActions = [
+            UIAccessibilityCustomAction(
+                name: subtask.isDone
+                    ? "Позначити невиконаним"
+                    : "Позначити виконаним"
+            ) { [weak self] _ in
+                self?.onToggle?()
+                return true
+            },
+
+            UIAccessibilityCustomAction(
+                name: subtask.needToNotify
+                    ? "Вимкнути сповіщення"
+                    : "Увімкнути сповіщення"
+            ) { [weak self] _ in
+                self?.onNotificationChange?(!subtask.needToNotify)
+                return true
+            },
+            UIAccessibilityCustomAction(
+                name: "Видалити підзавдання"
+            ) { [weak self] _ in
+                self?.onDelete?()
+                return true
+            },
+        ]
     }
 
     private func configureDoneButton(isDone: Bool) {
-        let imageName = isDone
+        let imageName =
+            isDone
             ? "checkmark.square.fill"
             : "square"
 
@@ -49,5 +94,7 @@ final class SubtaskCell: UITableViewCell {
         super.prepareForReuse()
         onToggle = nil
         onNotificationChange = nil
+        onDelete = nil
+        accessibilityCustomActions = nil
     }
 }

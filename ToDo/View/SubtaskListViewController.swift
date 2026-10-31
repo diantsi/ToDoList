@@ -19,9 +19,11 @@ final class SubtaskListViewController: UIViewController,
     var task: TodoTask!
     private var subtasks: [TodoSubtask] = []
 
-    private var notificationService : UserNotificationsService {
+
+    private var notificationService: UserNotificationsService {
         return UserNotificationsService.shared
     }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +39,6 @@ final class SubtaskListViewController: UIViewController,
         notificationSwitch.isOn = task.needToNotify
         loadSubtasks()
     }
-    
     private func loadSubtasks() {
         do {
             subtasks = try persistenceService.getSubtasks(
@@ -53,7 +54,10 @@ final class SubtaskListViewController: UIViewController,
     @IBAction private func notificationSwitchChanged(_ sender: UISwitch) {
         let needToNotify = sender.isOn
         do {
-            try persistenceService.setTaskNotificationEnabled(needToNotify, for: task.id)
+            try persistenceService.setTaskNotificationEnabled(
+                needToNotify,
+                for: task.id
+            )
         } catch {
             showToggleError(error)
             return
@@ -64,7 +68,6 @@ final class SubtaskListViewController: UIViewController,
             notificationService.cancelNotification(with: task)
         }
     }
-
 
     func tableView(
         _ tableView: UITableView,
@@ -97,33 +100,89 @@ final class SubtaskListViewController: UIViewController,
             self?.setUpNotification(needToNotify: isOn, for: subtask)
         }
 
+        cell.onDelete = { [weak self] in
+            self?.deleteSubtask(id: subtask.id)
+        }
 
         return cell
     }
 
-    private func setUpNotification(needToNotify : Bool, for subtask: TodoSubtask){
+    private func setUpNotification(needToNotify: Bool, for subtask: TodoSubtask)
+    {
+        guard
+            let index = subtasks.firstIndex(
+                where: { $0.id == subtask.id }
+            )
+        else {
+            return
+        }
+
         do {
-            try persistenceService.setSubtaskNotificationEnabled(needToNotify, for: subtask.id)
+            try persistenceService.setSubtaskNotificationEnabled(
+                needToNotify,
+                for: subtask.id
+            )
         } catch {
+            reloadSubtask(at: index)
             showToggleError(error)
             return
         }
+
+        subtasks[index].needToNotify = needToNotify
+        reloadSubtask(at: index)
+
         if needToNotify {
-            sendNotification(for: subtask)
+            sendNotification(
+                for: subtasks[index],
+                successAnnouncement: "Сповіщення увімкнені"
+            )
         } else {
             notificationService.cancelNotification(with: subtask)
+
+            UIAccessibility.post(
+                notification: .announcement,
+                argument: "Сповіщення вимкнені"
+            )
         }
     }
-    
+
     private func toggleSubtask(id: UUID) {
+        guard
+            let index = subtasks.firstIndex(
+                where: { $0.id == id }
+            )
+        else {
+            return
+        }
+
+        let newIsDone = !subtasks[index].isDone
+
         do {
             try persistenceService.toggleSubtaskDone(id: id)
-            loadSubtasks()
+
+            subtasks[index].isDone = newIsDone
+            reloadSubtask(at: index)
+
+            UIAccessibility.post(
+                notification: .announcement,
+                argument: newIsDone
+                    ? "Підзавдання позначено виконаним"
+                    : "Підзавдання позначено невиконаним"
+            )
         } catch {
             showToggleError(error)
         }
     }
-    
+
+    private func reloadSubtask(at index: Int) {
+        tableView.reloadRows(
+            at: [IndexPath(row: index, section: 0)],
+            with: UIAccessibility.isReduceMotionEnabled
+                ? .none
+                : .automatic
+        )
+    }
+
     private func showToggleError(_ error: Error) {
         let alert = UIAlertController(
             title: "Не вдалося оновити завдання",
@@ -141,7 +200,10 @@ final class SubtaskListViewController: UIViewController,
         present(alert, animated: true)
     }
 
-    private func sendNotification(for reminderItem: any ReminderItem) {
+    private func sendNotification(
+        for reminderItem: any ReminderItem,
+        successAnnouncement: String? = nil
+    ) {
         Task { [weak self] in
             guard let self else {
                 return
@@ -151,6 +213,13 @@ final class SubtaskListViewController: UIViewController,
                 try await notificationService.sendNotification(
                     with: reminderItem
                 )
+
+                if let successAnnouncement {
+                    UIAccessibility.post(
+                        notification: .announcement,
+                        argument: successAnnouncement
+                    )
+                }
             } catch NotificationError.notificationAccessDenied {
                 showNotificationAccessAlert()
             } catch {
@@ -182,15 +251,34 @@ final class SubtaskListViewController: UIViewController,
             return
         }
 
-        let subtask = subtasks[indexPath.row]
+        deleteSubtask(id: subtasks[indexPath.row].id)
+    }
+
+    private func deleteSubtask(id: UUID) {
+        guard
+            let index = subtasks.firstIndex(
+                where: { $0.id == id }
+            )
+        else {
+            return
+        }
+
+        let indexPath = IndexPath(row: index, section: 0)
+        let subtask = subtasks[index]
 
         do {
-            try persistenceService.deleteSubtask(id: subtask.id)
+            try persistenceService.deleteSubtask(id: id)
             notificationService.cancelNotification(with: subtask)
-            subtasks.remove(at: indexPath.row)
+            subtasks.remove(at: index)
             tableView.deleteRows(
                 at: [indexPath],
-                with: .automatic
+                with: UIAccessibility.isReduceMotionEnabled
+                    ? .none
+                    : .automatic
+            )
+            UIAccessibility.post(
+                notification: .announcement,
+                argument: "Підзавдання видалено"
             )
         } catch {
             let alert = UIAlertController(
@@ -237,11 +325,11 @@ final class SubtaskListViewController: UIViewController,
                 subtask,
                 to: task
             )
-            
+
             if needToNotify {
                 sendNotification(for: subtask)
             }
-            
+
             loadSubtasks()
         }
     }

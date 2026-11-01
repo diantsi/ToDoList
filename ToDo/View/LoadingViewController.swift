@@ -9,6 +9,9 @@ import UIKit
 
 final class LoadingViewController: UIViewController {
 
+    private var imageWidthConstraint: NSLayoutConstraint!
+    private var imageHeightConstraint: NSLayoutConstraint!
+
     private let imageView: UIImageView = {
         let imageView = UIImageView(
             image: UIImage(systemName: "figure.cooldown")
@@ -24,12 +27,23 @@ final class LoadingViewController: UIViewController {
         label.text = "я завантажуюсь"
         label.font = .preferredFont(forTextStyle: .headline)
         label.adjustsFontForContentSizeCategory = true
+        label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.numberOfLines = 0
         label.isAccessibilityElement = true
         label.accessibilityLabel = "триває аутентифікація"
         return label
+    }()
+
+    private lazy var contentStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [
+            imageView,
+            progressLabel,
+        ])
+        stackView.axis = .vertical
+        stackView.alignment = .center
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
 
     init() {
@@ -49,29 +63,60 @@ final class LoadingViewController: UIViewController {
             argument: "перевіряємо аутентифікацію"
         )
         setupView()
+
+        registerForTraitChanges(
+            [UITraitPreferredContentSizeCategory.self]) {
+                (self: Self, _: UITraitCollection) in
+                self.updateDynamicTypeLayout()
+            }
+        updateDynamicTypeLayout()
     }
 
     private func setupView() {
         view.backgroundColor = .systemBackground
 
-        let stackView = UIStackView(arrangedSubviews: [
-            imageView,
-            progressLabel,
-        ])
-        stackView.axis = .vertical
-        stackView.spacing = 20
-        stackView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(contentStackView)
 
-        view.addSubview(stackView)
+        imageWidthConstraint = imageView.widthAnchor.constraint(equalToConstant: 100)
+        imageHeightConstraint = imageView.heightAnchor.constraint(equalToConstant: 100)
 
         NSLayoutConstraint.activate([
-            imageView.heightAnchor.constraint(equalToConstant: 100),
-            stackView.centerXAnchor.constraint(
+            contentStackView.centerXAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.centerXAnchor
             ),
-            stackView.centerYAnchor.constraint(
+            contentStackView.centerYAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.centerYAnchor
             ),
+            contentStackView.leadingAnchor.constraint(
+                greaterThanOrEqualTo: view.layoutMarginsGuide.leadingAnchor
+            ),
+            contentStackView.trailingAnchor.constraint(
+                lessThanOrEqualTo: view.layoutMarginsGuide.trailingAnchor
+            ),
+            contentStackView.topAnchor.constraint(
+                greaterThanOrEqualTo: view.layoutMarginsGuide.topAnchor
+            ),
+            contentStackView.bottomAnchor.constraint(
+                lessThanOrEqualTo: view.layoutMarginsGuide.bottomAnchor
+            ),
+            imageWidthConstraint,
+            imageHeightConstraint,
         ])
+    }
+
+    private func updateDynamicTypeLayout() {
+        let metrics = UIFontMetrics(forTextStyle: .headline)
+
+        imageWidthConstraint.constant = metrics.scaledValue(for: 100)
+        imageHeightConstraint.constant = metrics.scaledValue(for: 100)
+        contentStackView.spacing = metrics.scaledValue(for: 20)
+
+        let inset = metrics.scaledValue(for: 0)
+        view.directionalLayoutMargins = NSDirectionalEdgeInsets(
+            top: inset,
+            leading: inset,
+            bottom: inset,
+            trailing: inset
+        )
     }
 }

@@ -42,12 +42,14 @@ final class AddTaskViewController: UIViewController {
 
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var dueDatePicker: UIDatePicker!
-
     @IBOutlet weak var toNotifySwitch: UISwitch!
-
     @IBOutlet weak var saveBarButton: UIBarButtonItem!
-
     @IBOutlet weak var cancelBarButton: UIBarButtonItem!
+    @IBOutlet weak var contentStackView: UIStackView!
+    @IBOutlet weak var notificationStackView: UIStackView!
+    @IBOutlet weak var contentStackTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var contentStackLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var contentStackTrailingConstraint: NSLayoutConstraint!
     
     var itemKind: ItemKind = .task
 
@@ -61,6 +63,12 @@ final class AddTaskViewController: UIViewController {
         navigationItem.title = itemKind.navigationTitle
 
         configureAccessibility()
+        registerForTraitChanges(
+            [UITraitPreferredContentSizeCategory.self]
+        ) { (self: Self, _: UITraitCollection) in
+            self.updateDynamicTypeLayout()
+        }
+        updateDynamicTypeLayout()
     }
 
     private func configureAccessibility() {
@@ -76,6 +84,28 @@ final class AddTaskViewController: UIViewController {
         cancelBarButton.accessibilityLabel = "Закрити вкладку"
 
     }
+
+    private func updateDynamicTypeLayout() {
+        let usesAccessibilityCategory = traitCollection
+            .preferredContentSizeCategory.isAccessibilityCategory
+
+        notificationStackView.axis =
+            usesAccessibilityCategory ? .vertical : .horizontal
+        notificationStackView.alignment =
+            usesAccessibilityCategory ? .fill : .center
+        toNotifySwitch.contentHorizontalAlignment =
+            usesAccessibilityCategory ? .leading : .center
+
+        let metrics = UIFontMetrics(forTextStyle: .body)
+        contentStackView.spacing = metrics.scaledValue(for: 10)
+        notificationStackView.spacing = metrics.scaledValue(for: 8)
+
+        let inset = metrics.scaledValue(for: 10)
+        contentStackTopConstraint.constant = inset
+        contentStackLeadingConstraint.constant = inset
+        contentStackTrailingConstraint.constant = inset
+    }
+
     private func setLimitForDatePicker() {
         let calendar = Calendar.current
         let currentMinute =

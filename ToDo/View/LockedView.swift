@@ -9,6 +9,9 @@ final class LockedView: UIView {
 
     var onUnlock: (() -> Void)?
 
+    private var imageWidthConstraint: NSLayoutConstraint!
+    private var imageHeightConstraint: NSLayoutConstraint!
+
     private let imageView: UIImageView = {
         let imageView = UIImageView(
             image: UIImage(systemName: "lock.fill")
@@ -50,6 +53,18 @@ final class LockedView: UIView {
         return button
     }()
 
+    private lazy var contentStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [
+            imageView,
+            messageLabel,
+            unlockButton,
+        ])
+        stackView.axis = .vertical
+        stackView.alignment = .center
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -63,38 +78,56 @@ final class LockedView: UIView {
     private func setupView() {
         backgroundColor = .systemBackground
 
-        addSubview(imageView)
-        addSubview(messageLabel)
-        addSubview(unlockButton)
+        addSubview(contentStackView)
+
+        imageWidthConstraint = imageView.widthAnchor.constraint(equalToConstant: 40)
+        imageHeightConstraint = imageView.heightAnchor.constraint(equalToConstant: 40)
 
         NSLayoutConstraint.activate([
-            imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            imageView.centerYAnchor.constraint(
-                equalTo: centerYAnchor,
-                constant: -50
+            contentStackView.centerXAnchor.constraint(
+                equalTo: layoutMarginsGuide.centerXAnchor
             ),
-            imageView.widthAnchor.constraint(equalToConstant: 40),
-            imageView.heightAnchor.constraint(equalToConstant: 40),
-
-            messageLabel.topAnchor.constraint(
-                equalTo: imageView.bottomAnchor,
-                constant: 12
+            contentStackView.centerYAnchor.constraint(
+                equalTo: layoutMarginsGuide.centerYAnchor
             ),
-            messageLabel.leadingAnchor.constraint(
-                equalTo: leadingAnchor,
-                constant: 24
+            contentStackView.leadingAnchor.constraint(
+                greaterThanOrEqualTo: layoutMarginsGuide.leadingAnchor
             ),
-            messageLabel.trailingAnchor.constraint(
-                equalTo: trailingAnchor,
-                constant: -24
+            contentStackView.trailingAnchor.constraint(
+                lessThanOrEqualTo: layoutMarginsGuide.trailingAnchor
             ),
-
-            unlockButton.topAnchor.constraint(
-                equalTo: messageLabel.bottomAnchor,
-                constant: 20
+            contentStackView.topAnchor.constraint(
+                greaterThanOrEqualTo: layoutMarginsGuide.topAnchor
             ),
-            unlockButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            contentStackView.bottomAnchor.constraint(
+                lessThanOrEqualTo: layoutMarginsGuide.bottomAnchor
+            ),
+            imageWidthConstraint,
+            imageHeightConstraint,
         ])
+
+        registerForTraitChanges(
+            [UITraitPreferredContentSizeCategory.self]) {
+                (self: Self, _: UITraitCollection) in
+                self.updateDynamicTypeLayout()
+            }
+        updateDynamicTypeLayout()
+    }
+
+    private func updateDynamicTypeLayout() {
+        let metrics = UIFontMetrics(forTextStyle: .body)
+
+        imageWidthConstraint.constant = metrics.scaledValue(for: 40)
+        imageHeightConstraint.constant = metrics.scaledValue(for: 40)
+        contentStackView.spacing = metrics.scaledValue(for: 17)
+
+        let inset = metrics.scaledValue(for: 0)
+        directionalLayoutMargins = NSDirectionalEdgeInsets(
+            top: inset,
+            leading: inset,
+            bottom: inset,
+            trailing: inset
+        )
     }
 
     @objc private func unlockButtonTapped() {

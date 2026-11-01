@@ -11,9 +11,51 @@ final class HiddenCell: UITableViewCell {
     @IBOutlet weak var isDone: UIButton!
     @IBOutlet weak var dueDateLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var cellStackView: UIStackView!
+    @IBOutlet weak var textStackView: UIStackView!
+    @IBOutlet weak var trailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var leadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var topConstraint: NSLayoutConstraint!
 
     var onToggle: (() -> Void)?
     var onDelete: (() -> Void)?
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+
+        registerForTraitChanges(
+            [UITraitPreferredContentSizeCategory.self]) {
+                (self: Self, _: UITraitCollection) in
+                self.updateDynamicTypeLayout()
+            }
+        updateDynamicTypeLayout()
+    }
+
+    func updateDynamicTypeLayout() {
+        let usesAccessibilityCategory = traitCollection
+            .preferredContentSizeCategory.isAccessibilityCategory
+
+        cellStackView.axis = usesAccessibilityCategory ? .vertical : .horizontal
+        cellStackView.alignment = usesAccessibilityCategory ? .fill : .center
+        isDone.contentHorizontalAlignment =
+            usesAccessibilityCategory ? .leading : .center
+
+        let metrics = UIFontMetrics(forTextStyle: .body)
+
+        cellStackView.spacing = metrics.scaledValue(for: 12)
+        textStackView.spacing = metrics.scaledValue(for: 10)
+
+        let constraint = metrics.scaledValue(for: 10)
+        trailingConstraint.constant = constraint
+        leadingConstraint.constant = constraint
+        topConstraint.constant = constraint
+        bottomConstraint.constant = constraint
+
+        var configuration = isDone.configuration
+        configuration?.contentInsets = .zero
+        isDone.configuration = configuration
+    }
 
     func configure(with task: TodoTask) {
         titleLabel.text = task.name

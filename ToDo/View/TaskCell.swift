@@ -11,9 +11,27 @@ final class TaskCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var dueDateLabel: UILabel!
     @IBOutlet weak var doneButton: UIButton!
+    @IBOutlet weak var cellStackView: UIStackView!
+    @IBOutlet weak var textStackView: UIStackView!
+    @IBOutlet weak var trailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var leadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var topConstraint: NSLayoutConstraint!
 
     var onToggle: (() -> Void)?
     var onDelete: (() -> Void)?
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+
+        registerForTraitChanges(
+            [UITraitPreferredContentSizeCategory.self]
+        ) { (self: Self, _: UITraitCollection) in
+            self.updateDynamicTypeLayout()
+        }
+
+        updateDynamicTypeLayout()
+    }
 
     func configure(with task: TodoTask) {
         nameLabel.text = task.name
@@ -64,13 +82,37 @@ final class TaskCell: UITableViewCell {
     }
 
     private func configureDoneButton(isDone: Bool) {
-        let imageName =
-            isDone
+        let imageName = isDone
             ? "checkmark.square.fill"
             : "square"
 
         var configuration = doneButton.configuration
         configuration?.image = UIImage(systemName: imageName)
+        doneButton.configuration = configuration
+    }
+
+    func updateDynamicTypeLayout() {
+        let usesAccessibilityCategory = traitCollection
+            .preferredContentSizeCategory.isAccessibilityCategory
+
+        cellStackView.axis = usesAccessibilityCategory ? .vertical : .horizontal
+        cellStackView.alignment = usesAccessibilityCategory ? .fill : .center
+        doneButton.contentHorizontalAlignment =
+            usesAccessibilityCategory ? .leading : .center
+
+        let metrics = UIFontMetrics(forTextStyle: .body)
+
+        cellStackView.spacing = metrics.scaledValue(for: 12)
+        textStackView.spacing = metrics.scaledValue(for: 10)
+
+        let constraint = metrics.scaledValue(for: 10)
+        trailingConstraint.constant = constraint
+        leadingConstraint.constant = constraint
+        topConstraint.constant = constraint
+        bottomConstraint.constant = constraint
+
+        var configuration = doneButton.configuration
+        configuration?.contentInsets = .zero
         doneButton.configuration = configuration
     }
 

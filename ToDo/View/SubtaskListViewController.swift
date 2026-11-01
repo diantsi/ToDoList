@@ -16,6 +16,7 @@ final class SubtaskListViewController: UIViewController,
     
     @IBOutlet weak var subtasksTitleLabel: UILabel!
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var notificationStackView: UIStackView!
     @IBOutlet private weak var notificationSwitch: UISwitch!
 
     var persistenceService: any PersistenceService!
@@ -36,6 +37,28 @@ final class SubtaskListViewController: UIViewController,
         
         
         configureAccessibility()
+
+        registerForTraitChanges(
+            [UITraitPreferredContentSizeCategory.self]
+        ) { (self: Self, _: UITraitCollection) in
+            self.updateDynamicTypeLayout()
+        }
+        updateDynamicTypeLayout()
+    }
+
+    private func updateDynamicTypeLayout() {
+        let usesAccessibilityCategory = traitCollection
+            .preferredContentSizeCategory.isAccessibilityCategory
+
+        notificationStackView.axis =
+            usesAccessibilityCategory ? .vertical : .horizontal
+        notificationStackView.alignment =
+            usesAccessibilityCategory ? .fill : .center
+        notificationSwitch.contentHorizontalAlignment =
+            usesAccessibilityCategory ? .leading : .center
+
+        let metrics = UIFontMetrics(forTextStyle: .body)
+        notificationStackView.spacing = metrics.scaledValue(for: 8)
     }
     
     private func configureAccessibility() {

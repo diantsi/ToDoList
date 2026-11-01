@@ -31,9 +31,7 @@ final class AppCoordinator {
     }
 
     func showLoading() {
-        let controller = storyboard.instantiateViewController(
-            withIdentifier: "LoadingViewController"
-        )
+        let controller = LoadingViewController()
 
         window.rootViewController = controller
         window.makeKeyAndVisible()

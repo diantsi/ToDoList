@@ -23,6 +23,9 @@ final class LockedView: UIView {
     private let messageLabel: UILabel = {
         let label = UILabel()
         label.text = "Захищені завдання заблоковані"
+        label.font = .preferredFont(forTextStyle: .body)
+        label.adjustsFontForContentSizeCategory = true
+        label.numberOfLines = 0
         label.accessibilityLabel = "Захищені завдання заблоковані"
         label.textAlignment = .center
         label.textColor = .secondaryLabel

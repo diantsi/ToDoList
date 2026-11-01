@@ -22,7 +22,9 @@ final class LoadingViewController: UIViewController {
     private let progressLabel: UILabel = {
         let label = UILabel()
         label.text = "я завантажуюсь"
-        label.font = .systemFont(ofSize: 21)
+        label.font = .preferredFont(forTextStyle: .headline)
+        label.adjustsFontForContentSizeCategory = true
+        label.numberOfLines = 0
         label.textAlignment = .center
         label.numberOfLines = 0
         label.isAccessibilityElement = true

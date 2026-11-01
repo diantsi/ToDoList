@@ -9,6 +9,9 @@ import UIKit
 
 class ViewController: UITableViewController {
 
+
+    @IBOutlet weak var navigationAddButton: UIBarButtonItem!
+    
     var persistenceService: any PersistenceService!
     private var tasks: [TodoTask] = []
 
@@ -27,6 +30,8 @@ class ViewController: UITableViewController {
             name: .todoTasksDidChange,
             object: nil
         )
+        
+        navigationAddButton.accessibilityLabel = "Додати завдання"
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -265,7 +270,7 @@ class ViewController: UITableViewController {
             return
         }
 
-        addTaskVC.isSubtask = false
+        addTaskVC.itemKind = .task
 
         addTaskVC.onSave = { [weak self] name, date, needToNotify in
             guard let self else {

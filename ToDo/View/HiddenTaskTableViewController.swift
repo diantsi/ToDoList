@@ -9,6 +9,7 @@ import UIKit
 
 class HiddenTaskTableViewController: UITableViewController {
 
+    @IBOutlet weak var navigationAddButton: UIBarButtonItem!
     var hiddenTasks: [TodoTask] = []
 
     let todoRepository = HiddenTaskRepository()
@@ -38,6 +39,8 @@ class HiddenTaskTableViewController: UITableViewController {
             name: UIApplication.willEnterForegroundNotification,
             object: nil
         )
+        
+        navigationAddButton.accessibilityLabel = "Додати приховане завдання"
     }
 
     @objc private func appWillResignActive() {
@@ -204,7 +207,7 @@ class HiddenTaskTableViewController: UITableViewController {
             return
         }
 
-        addTaskVC.isSubtask = true
+        addTaskVC.itemKind = .protectedTask
 
         addTaskVC.onSave = { [weak self] name, dueDate, needToNotify in
             guard let self else {
@@ -217,20 +220,9 @@ class HiddenTaskTableViewController: UITableViewController {
                 needToNotify: needToNotify
             )
 
-            saveTask(task: task)
-
-        }
-    }
-
-    private func saveTask(task: TodoTask) {
-        Task {
-            do {
-                try await todoRepository.saveTodo(todo: task)
-            } catch {
-                showError(error, title: "Не вдалося зберегти")
-            }
-
+            try await todoRepository.saveTodo(todo: task)
             tryToUnlock()
+
         }
     }
 

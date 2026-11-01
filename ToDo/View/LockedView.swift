@@ -15,6 +15,7 @@ final class LockedView: UIView {
         )
         imageView.tintColor = .secondaryLabel
         imageView.contentMode = .scaleAspectFit
+        imageView.isAccessibilityElement = false
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -22,6 +23,7 @@ final class LockedView: UIView {
     private let messageLabel: UILabel = {
         let label = UILabel()
         label.text = "Захищені завдання заблоковані"
+        label.accessibilityLabel = "Захищені завдання заблоковані"
         label.textAlignment = .center
         label.textColor = .secondaryLabel
         label.numberOfLines = 0
@@ -34,6 +36,8 @@ final class LockedView: UIView {
         var configuration = UIButton.Configuration.filled()
         configuration.title = "Розблокувати"
         button.configuration = configuration
+        button.accessibilityLabel = "Показати захищені завдання"
+        button.accessibilityHint = "Виконує біометричну перевірку"
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(
             self,

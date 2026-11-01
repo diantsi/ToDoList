@@ -12,6 +12,9 @@ final class SubtaskListViewController: UIViewController,
     UITableViewDelegate
 {
 
+    @IBOutlet weak var navigationAddButton: UIBarButtonItem!
+    
+    @IBOutlet weak var subtasksTitleLabel: UILabel!
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var notificationSwitch: UISwitch!
 
@@ -30,6 +33,16 @@ final class SubtaskListViewController: UIViewController,
 
         tableView.dataSource = self
         tableView.delegate = self
+        
+        
+        configureAccessibility()
+    }
+    
+    private func configureAccessibility() {
+        navigationAddButton.accessibilityLabel = "Додати підзавдання"
+        subtasksTitleLabel.accessibilityTraits.insert(.header)
+        notificationSwitch.isAccessibilityElement = true
+        notificationSwitch.accessibilityLabel = "Нагадувати про завдання"
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -308,7 +321,7 @@ final class SubtaskListViewController: UIViewController,
             return
         }
 
-        addTaskVC.isSubtask = true
+        addTaskVC.itemKind = .subtask
 
         addTaskVC.onSave = { [weak self] name, dueDate, needToNotify in
             guard let self else {

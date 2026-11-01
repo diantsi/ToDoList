@@ -2,8 +2,8 @@
 //  NotificationTaskCoordinator.swift
 //  ToDo
 //
-
 import Foundation
+import UIKit
 
 final class NotificationTaskCoordinator {
 
@@ -46,6 +46,10 @@ final class NotificationTaskCoordinator {
             name: .todoTasksDidChange,
             object: nil
         )
+        UIAccessibility.post(
+            notification: .announcement,
+            argument: "Сповіщення прийнято"
+        )
 
         return todoTask
     }
@@ -63,6 +67,10 @@ final class NotificationTaskCoordinator {
             for: notificationTask.id
         )
         notifyInboxChanged()
+        UIAccessibility.post(
+            notification: .announcement,
+            argument: "Сповіщення відхилено"
+        )
     }
 
     private func status(
@@ -94,4 +102,5 @@ extension Notification.Name {
     static let todoTasksDidChange = Notification.Name(
         "todoTasksDidChange"
     )
+
 }

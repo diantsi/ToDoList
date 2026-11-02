@@ -501,21 +501,24 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="hRz-Zs-cxG">
-                                <rect key="frame" x="20" y="90.000000000000014" width="353" height="208.33333333333337"/>
+                                <rect key="frame" x="20" y="90.000000000000014" width="353" height="218.33333333333337"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Введіть назву" textAlignment="natural" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9IY-Sc-L6i">
-                                        <rect key="frame" x="0.0" y="0.0" width="353" height="34"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="353" height="44"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="C1Q-UZ-A44"/>
+                                        </constraints>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Встановіть дедлайн" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KbO-8k-AbR">
-                                        <rect key="frame" x="0.0" y="54.000000000000007" width="353" height="20.333333333333336"/>
+                                        <rect key="frame" x="0.0" y="64" width="353" height="20.333333333333336"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="C7Z-fC-ptE">
-                                        <rect key="frame" x="0.0" y="94.333333333333343" width="353" height="50"/>
+                                        <rect key="frame" x="0.0" y="104.33333333333334" width="353" height="50"/>
                                         <subviews>
                                             <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="TYi-gJ-ISU">
                                                 <rect key="frame" x="0.0" y="0.0" width="353" height="50"/>
@@ -523,7 +526,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="BJg-O6-9Xs">
-                                        <rect key="frame" x="0.0" y="164.33333333333334" width="353" height="44"/>
+                                        <rect key="frame" x="0.0" y="174.33333333333334" width="353" height="44"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="1000" text="Увімкніть нагадування " textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IXU-9m-QDV">
                                                 <rect key="frame" x="0.0" y="11.99999999999997" width="284" height="20.333333333333329"/>
@@ -607,7 +610,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="JWk-P8-kr7">
-                                <rect key="frame" x="84.000000000000014" y="324.66666666666669" width="225.33333333333337" height="253.00000000000006"/>
+                                <rect key="frame" x="84.000000000000014" y="314.66666666666669" width="225.33333333333337" height="273.00000000000006"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Введіть свої дані для входу" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="18I-xC-JO3">
                                         <rect key="frame" x="0.0" y="0.0" width="225.33333333333334" height="20.333333333333332"/>
@@ -616,7 +619,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="uEv-6p-YlN">
-                                        <rect key="frame" x="0.0" y="40.333333333333307" width="225.33333333333334" height="64.333333333333314"/>
+                                        <rect key="frame" x="0.0" y="40.333333333333307" width="225.33333333333334" height="74.333333333333314"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="електронна пошта" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="l5l-Aw-I32">
                                                 <rect key="frame" x="0.0" y="0.0" width="225.33333333333334" height="20.333333333333332"/>
@@ -625,14 +628,17 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9dF-5L-7uv">
-                                                <rect key="frame" x="0.0" y="30.333333333333314" width="225.33333333333334" height="34"/>
+                                                <rect key="frame" x="0.0" y="30.333333333333314" width="225.33333333333334" height="44"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="J7e-EM-A44"/>
+                                                </constraints>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" textContentType="email"/>
                                             </textField>
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Td2-FY-J3L">
-                                        <rect key="frame" x="0.0" y="124.66666666666663" width="225.33333333333334" height="64.333333333333314"/>
+                                        <rect key="frame" x="0.0" y="134.66666666666663" width="225.33333333333334" height="74.333333333333314"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="пароль" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q1y-DZ-Lxh">
                                                 <rect key="frame" x="0.0" y="0.0" width="225.33333333333334" height="20.333333333333332"/>
@@ -641,14 +647,17 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="PDV-nJ-Ecq">
-                                                <rect key="frame" x="0.0" y="30.333333333333371" width="225.33333333333334" height="34"/>
+                                                <rect key="frame" x="0.0" y="30.333333333333371" width="225.33333333333334" height="44"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="V5P-PS-A44"/>
+                                                </constraints>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" secureTextEntry="YES" textContentType="password"/>
                                             </textField>
                                         </subviews>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3wb-aB-2Tf">
-                                        <rect key="frame" x="0.0" y="208.99999999999994" width="97" height="44"/>
+                                        <rect key="frame" x="0.0" y="228.99999999999994" width="97" height="44"/>
                                         <color key="backgroundColor" name="AccentColor"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="MSf-xu-ccB"/>

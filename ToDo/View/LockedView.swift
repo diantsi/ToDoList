@@ -104,6 +104,12 @@ final class LockedView: UIView {
             contentStackView.bottomAnchor.constraint(
                 lessThanOrEqualTo: layoutMarginsGuide.bottomAnchor
             ),
+            unlockButton.widthAnchor.constraint(
+                greaterThanOrEqualToConstant: 44
+            ),
+            unlockButton.heightAnchor.constraint(
+                greaterThanOrEqualToConstant: 44
+            ),
             imageWidthConstraint,
             imageHeightConstraint,
         ])

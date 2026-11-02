@@ -75,14 +75,17 @@ final class AddTaskViewController: UIViewController {
         let itemName = itemKind.name
         saveBarButton.accessibilityLabel = "зберегти \(itemName)"
         nameTextField.accessibilityLabel = "назва \(itemName)"
-        
         dueDatePicker.accessibilityLabel = "Термін виконання"
-        
         toNotifySwitch.accessibilityLabel =
                 "Увімкнути нагадування про \(itemName)"
-        
         cancelBarButton.accessibilityLabel = "Закрити вкладку"
-
+        
+        nameTextField.attributedPlaceholder = NSAttributedString(
+            string: "Введіть назву",
+            attributes: [
+                .foregroundColor: UIColor.label.withAlphaComponent(0.60),
+            ]
+        )
     }
 
     private func updateDynamicTypeLayout() {

@@ -41,6 +41,8 @@ final class LockedView: UIView {
         let button = UIButton(type: .system)
         var configuration = UIButton.Configuration.filled()
         configuration.title = "Розблокувати"
+        configuration.baseBackgroundColor = UIColor(named: "AccentColor")
+        configuration.baseForegroundColor = UIColor(named: "AccentForeground")
         button.configuration = configuration
         button.accessibilityLabel = "Показати захищені завдання"
         button.accessibilityHint = "Виконує біометричну перевірку"

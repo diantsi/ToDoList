@@ -19,6 +19,7 @@ final class LoadingViewController: UIViewController {
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.isAccessibilityElement = false
+        imageView.tintColor = UIColor(named: "AccentColor")
         return imageView
     }()
 

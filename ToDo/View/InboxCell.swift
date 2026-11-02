@@ -18,6 +18,7 @@ final class InboxCell: UITableViewCell {
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var topConstraint: NSLayoutConstraint!
 
+    @IBOutlet weak var inboxStateLabel: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -61,7 +62,7 @@ final class InboxCell: UITableViewCell {
         let presentation = presentation(
             for: notification.status
         )
-
+        inboxStateLabel.text = presentation.accessibilityValue
         contentView.backgroundColor = presentation.color
         
         accessibilityLabel = [
@@ -86,17 +87,17 @@ final class InboxCell: UITableViewCell {
         case .accepted:
             return (
                 UIColor.systemGreen.withAlphaComponent(0.25),
-                "Статус: прийнято"
+                "прийнято"
             )
         case .declined:
             return (
                 UIColor.systemRed.withAlphaComponent(0.25),
-                "Статус: відхилено"
+                "відхилено"
             )
         case .pending:
             return (
                 .systemBackground,
-                "Статус: очікує підтвердження"
+                "очікує підтвердження"
             )
         }
     }

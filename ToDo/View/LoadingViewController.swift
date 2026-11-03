@@ -25,14 +25,13 @@ final class LoadingViewController: UIViewController {
 
     private let progressLabel: UILabel = {
         let label = UILabel()
-        label.text = "я завантажуюсь"
+        label.text = "Я завантажуюсь"
         label.font = .preferredFont(forTextStyle: .headline)
         label.adjustsFontForContentSizeCategory = true
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.isAccessibilityElement = true
-        label.accessibilityLabel = "триває аутентифікація"
+        label.isAccessibilityElement = false
         return label
     }()
 
@@ -59,10 +58,6 @@ final class LoadingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        UIAccessibility.post(
-            notification: .announcement,
-            argument: "перевіряємо аутентифікацію"
-        )
         setupView()
 
         registerForTraitChanges(
@@ -71,6 +66,23 @@ final class LoadingViewController: UIViewController {
                 self.updateDynamicTypeLayout()
             }
         updateDynamicTypeLayout()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        let announcement = NSAttributedString(
+            string: "Перевіряємо автентифікацію",
+            attributes: [
+                .accessibilitySpeechAnnouncementPriority:
+                    UIAccessibilityPriority.high,
+            ]
+        )
+
+        UIAccessibility.post(
+            notification: .announcement,
+            argument: announcement
+        )
     }
 
     private func setupView() {

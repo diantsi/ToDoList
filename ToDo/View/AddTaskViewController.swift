@@ -86,6 +86,7 @@ final class AddTaskViewController: UIViewController {
                 .foregroundColor: UIColor.label.withAlphaComponent(0.60),
             ]
         )
+        nameTextField.attributedPlaceholder?.isAccessibilityElement = false
     }
 
     private func updateDynamicTypeLayout() {
@@ -158,10 +159,7 @@ final class AddTaskViewController: UIViewController {
             do {
                 try await onSave?(name, dueDate, needToNotify)
                 dismiss(animated: true) {
-                    UIAccessibility.post(
-                        notification: .announcement,
-                        argument: savedAnnouncement
-                    )
+                    self.postHighPriorityAnnouncement(savedAnnouncement)
                 }
             } catch {
                 saveBarButton.isEnabled = true
@@ -185,6 +183,21 @@ final class AddTaskViewController: UIViewController {
         )
 
         present(alert, animated: true)
+    }
+
+    private func postHighPriorityAnnouncement(_ message: String) {
+        let announcement = NSAttributedString(
+            string: message,
+            attributes: [
+                .accessibilitySpeechAnnouncementPriority:
+                    UIAccessibilityPriority.high,
+            ]
+        )
+
+        UIAccessibility.post(
+            notification: .announcement,
+            argument: announcement
+        )
     }
 
 }

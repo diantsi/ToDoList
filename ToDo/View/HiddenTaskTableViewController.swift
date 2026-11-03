@@ -58,6 +58,15 @@ class HiddenTaskTableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains(
+            "-UITestKeepHiddenTasksLocked"
+        ) {
+            lock()
+            return
+        }
+        #endif
+
         tryToUnlock()
     }
 

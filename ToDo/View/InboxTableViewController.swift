@@ -16,6 +16,8 @@ class InboxTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        tableView.accessibilityLabel = "Вхідні повідомлення"
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(notificationTasksDidChange),

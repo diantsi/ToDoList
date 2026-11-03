@@ -24,6 +24,22 @@ final class AppCoordinator {
     }
 
     func start() {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains(
+            "-UITestShowAuthentication"
+        ) {
+            showLogin()
+            return
+        }
+
+        if ProcessInfo.processInfo.arguments.contains(
+            "-UITestSkipAuthentication"
+        ) {
+            showMainInterface()
+            return
+        }
+        #endif
+
         showLoading()
         Task {
             await attemptAutomaticLogin()

@@ -81,7 +81,7 @@ final class AddTaskViewController: UIViewController {
         cancelBarButton.accessibilityLabel = "Закрити вкладку"
         
         nameTextField.attributedPlaceholder = NSAttributedString(
-            string: "Введіть назву",
+            string: "Назва",
             attributes: [
                 .foregroundColor: UIColor.label.withAlphaComponent(0.60),
             ]

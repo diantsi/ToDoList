@@ -10,10 +10,6 @@
 		9A11454530A1E4FA0098595E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A11454430A1E4FA0098595E /* WidgetKit.framework */; };
 		9A11454730A1E4FA0098595E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A11454630A1E4FA0098595E /* SwiftUI.framework */; };
 		9A11455830A1E4FB0098595E /* TodoWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9A11454230A1E4FA0098595E /* TodoWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		9A3E0362307E5752001F195F /* SubtaskTodo+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A3E035E307E5752001F195F /* SubtaskTodo+CoreDataClass.swift */; };
-		9A3E0363307E5752001F195F /* TaskTodo+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A3E0360307E5752001F195F /* TaskTodo+CoreDataClass.swift */; };
-		9A3E0364307E5752001F195F /* TaskTodo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A3E0361307E5752001F195F /* TaskTodo+CoreDataProperties.swift */; };
-		9A3E0365307E5752001F195F /* SubtaskTodo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A3E035F307E5752001F195F /* SubtaskTodo+CoreDataProperties.swift */; };
 		9A3E0374307EAA19001F195F /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 9A3E0373307EAA19001F195F /* RealmSwift */; };
 		9AA6C0A7308E964000B4AB1B /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 9A3E0373307EAA19001F195F /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -62,10 +58,6 @@
 		9A11454630A1E4FA0098595E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		9A11455E30A1E5230098595E /* TodoWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TodoWidgetExtension.entitlements; sourceTree = "<group>"; };
 		9A30959B3099173B0061FEA0 /* ToDoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ToDoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		9A3E035E307E5752001F195F /* SubtaskTodo+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SubtaskTodo+CoreDataClass.swift"; sourceTree = "<group>"; };
-		9A3E035F307E5752001F195F /* SubtaskTodo+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SubtaskTodo+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		9A3E0360307E5752001F195F /* TaskTodo+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaskTodo+CoreDataClass.swift"; sourceTree = "<group>"; };
-		9A3E0361307E5752001F195F /* TaskTodo+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaskTodo+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		9A4E0A7930762E1600F36AB0 /* ToDo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -151,10 +143,6 @@
 			children = (
 				9A11458730A1ECAE0098595E /* Shared */,
 				9A11455E30A1E5230098595E /* TodoWidgetExtension.entitlements */,
-				9A3E035E307E5752001F195F /* SubtaskTodo+CoreDataClass.swift */,
-				9A3E035F307E5752001F195F /* SubtaskTodo+CoreDataProperties.swift */,
-				9A3E0360307E5752001F195F /* TaskTodo+CoreDataClass.swift */,
-				9A3E0361307E5752001F195F /* TaskTodo+CoreDataProperties.swift */,
 				9A4E0A7B30762E1600F36AB0 /* ToDo */,
 				9A30959C3099173B0061FEA0 /* ToDoUITests */,
 				9A11454830A1E4FA0098595E /* TodoWidget */,
@@ -188,6 +176,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				9A11454830A1E4FA0098595E /* TodoWidget */,
+				9A11458730A1ECAE0098595E /* Shared */,
 			);
 			name = TodoWidgetExtension;
 			productName = TodoWidgetExtension;
@@ -320,10 +309,6 @@
 		9A4E0A7530762E1600F36AB0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
-				9A3E0362307E5752001F195F /* SubtaskTodo+CoreDataClass.swift in Sources */,
-				9A3E0363307E5752001F195F /* TaskTodo+CoreDataClass.swift in Sources */,
-				9A3E0364307E5752001F195F /* TaskTodo+CoreDataProperties.swift in Sources */,
-				9A3E0365307E5752001F195F /* SubtaskTodo+CoreDataProperties.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */
@@ -355,6 +340,7 @@
 				INFOPLIST_FILE = TodoWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TodoWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -387,6 +373,7 @@
 				INFOPLIST_FILE = TodoWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TodoWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -7,5 +7,5 @@
 
 
 enum PersistenceServiceProvider {
-    static let shared: any PersistenceService = RealmService()
+    static let shared: any PersistenceService = CoreDataService()
 }

@@ -8,12 +8,27 @@
 import CoreData
 
 class CoreDataService: PersistenceService {
+    
+    enum Const {
+        static let appGroupId = "group.ua.edu.ukma.tsisaruk.ToDo"
+    }
 
     private let persistentContainer: NSPersistentContainer
     private let context: NSManagedObjectContext
 
     init() {
+        guard let dbFileUrl = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Const.appGroupId)?.appending(path: "Todo.sqlite")
+                else {
+            fatalError(
+                "cannot find sqlite file"
+            )
+        }
+        let storeDescription = NSPersistentStoreDescription(url: dbFileUrl)
+        storeDescription.shouldMigrateStoreAutomatically = true
+        storeDescription.shouldInferMappingModelAutomatically = true 
+        
         persistentContainer = NSPersistentContainer(name: "ToDo")
+        persistentContainer.persistentStoreDescriptions = [storeDescription]
         persistentContainer.loadPersistentStores {
             (_, error) in
 

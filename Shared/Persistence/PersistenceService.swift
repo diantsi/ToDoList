@@ -14,6 +14,8 @@ protocol PersistenceService {
     func deleteTask(id: UUID) throws
     func toggleTaskDone(id: UUID) throws
     func setTaskNotificationEnabled(_ isEnabled: Bool, for taskId: UUID) throws
+    
+    func getPendingTasks(limit: Int) throws -> [TodoTask]
 
 //    // MARK: - Subtasks
     func getSubtasks(for taskId: UUID) throws -> [TodoSubtask]

@@ -56,6 +56,21 @@ class CoreDataService: PersistenceService {
         return try fetchTasks(isHidden: isHidden).map(convertTask)
     }
     
+    func getPendingTasks(limit: Int) throws -> [TodoTask] {
+        let fetchRequest = TaskTodo.fetchRequest()
+        fetchRequest.predicate = NSPredicate(
+            format: "isDone == %@",
+            NSNumber(value: false)
+        )
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(keyPath: \TaskTodo.dueDate, ascending: true)
+        ]
+        fetchRequest.fetchLimit = limit
+        let entities = try context.fetch(fetchRequest)
+        
+        return try entities.map(convertTask)
+    }
+    
     func getSubtasks(for taskId: UUID) throws -> [TodoSubtask] {
         let fetchRequest = SubtaskTodo.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "task.id == %@", taskId as NSUUID)

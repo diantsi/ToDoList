@@ -11,8 +11,8 @@ import SwiftUI
 @main
 struct TodoWidgetBundle: WidgetBundle {
     var body: some Widget {
-        TodoWidget()
-        TodoWidgetControl()
-        TodoWidgetLiveActivity()
+        PendingTaskWidget()
+//        TodoWidgetControl()
+//        TodoWidgetLiveActivity()
     }
 }

@@ -266,5 +266,9 @@ class RealmService: PersistenceService {
             receivedAt: entity.receivedAt
         )
     }
+    
+    func getPendingTasks(limit: Int) throws -> [TodoTask] {
+        return []
+    }
 
 }

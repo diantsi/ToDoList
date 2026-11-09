@@ -28,6 +28,8 @@ final class HiddenTaskRepository {
         try keychainService.save(data: data, account: account)
         let hiddenTask = todo.hiddenTask
         try persistenceService.addTask(hiddenTask)
+        WidgetTaskUpdater.didTaskChange()
+
         if hiddenTask.needToNotify {
             try await notificationService.sendNotification(with: hiddenTask)
         }
@@ -65,6 +67,8 @@ final class HiddenTaskRepository {
     func deleteTodo(for todoTask: TodoTask) throws {
         let id = todoTask.id
         try persistenceService.deleteTask(id: id)
+        WidgetTaskUpdater.didTaskChange()
+
         try keychainService.delete(account: id.uuidString)
         notificationService.cancelNotification(with: todoTask)
         for subtask in todoTask.subtasks {
@@ -74,6 +78,7 @@ final class HiddenTaskRepository {
 
     func toggleTodoDone(id: UUID) throws {
         try persistenceService.toggleTaskDone(id: id)
+        WidgetTaskUpdater.didTaskChange()
     }
 
 }

@@ -37,6 +37,7 @@ final class NotificationTaskCoordinator {
         )
 
         try persistenceService.addTask(todoTask)
+        WidgetTaskUpdater.didTaskChange()
         try persistenceService.setNotificationTaskStatus(
             .accepted,
             for: notificationTask.id

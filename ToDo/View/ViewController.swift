@@ -112,6 +112,7 @@ class ViewController: UITableViewController {
                     ? "Завдання позначено виконаним"
                     : "Завдання позначено невиконаним"
             )
+            WidgetTaskUpdater.didTaskChange()
         } catch {
             showToggleError(error)
         }
@@ -215,6 +216,7 @@ class ViewController: UITableViewController {
                 notification: .announcement,
                 argument: "Завдання видалено"
             )
+            WidgetTaskUpdater.didTaskChange()
         } catch {
             let alert = UIAlertController(
                 title: "Не вдалося видалити",
@@ -289,6 +291,7 @@ class ViewController: UITableViewController {
                 sendNotification(for: task)
             }
             loadTasks()
+            WidgetTaskUpdater.didTaskChange()
         }
     }
 

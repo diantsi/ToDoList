@@ -31,8 +31,16 @@ class ViewController: UITableViewController {
             object: nil
         )
         
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(todoTasksDidChange),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+        
         navigationAddButton.accessibilityLabel = "Додати завдання"
     }
+
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

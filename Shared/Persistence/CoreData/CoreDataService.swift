@@ -71,6 +71,10 @@ class CoreDataService: PersistenceService {
         return try entities.map(convertTask)
     }
     
+    func getTaskById(id: UUID) throws -> TodoTask {
+        return try convertTask(fetchTask(id))
+    }
+    
     func getSubtasks(for taskId: UUID) throws -> [TodoSubtask] {
         let fetchRequest = SubtaskTodo.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "task.id == %@", taskId as NSUUID)

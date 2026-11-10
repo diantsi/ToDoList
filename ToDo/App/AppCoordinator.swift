@@ -16,6 +16,8 @@ final class AppCoordinator {
 
     private let authService: AuthService
 
+    private var pendingURL: URL?
+
     init(window: UIWindow) {
         self.window = window
         self.storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -25,25 +27,81 @@ final class AppCoordinator {
 
     func start() {
         #if DEBUG
-        if ProcessInfo.processInfo.arguments.contains(
-            "-UITestShowAuthentication"
-        ) {
-            showLogin()
-            return
-        }
+            if ProcessInfo.processInfo.arguments.contains(
+                "-UITestShowAuthentication"
+            ) {
+                showLogin()
+                return
+            }
 
-        if ProcessInfo.processInfo.arguments.contains(
-            "-UITestSkipAuthentication"
-        ) {
-            showMainInterface()
-            return
-        }
+            if ProcessInfo.processInfo.arguments.contains(
+                "-UITestSkipAuthentication"
+            ) {
+                showMainInterface()
+                return
+            }
         #endif
 
         showLoading()
         Task {
             await attemptAutomaticLogin()
         }
+    }
+
+    func registerUrl(initialUrl: URL) {
+        pendingURL = initialUrl
+    }
+
+    func openURL(url: URL) {
+        guard let id = decodeIdFromUrl(url),
+            let tabBarController = window.rootViewController
+                as? UITabBarController,
+            let navigationController = tabBarController.viewControllers?.first
+                as? UINavigationController,
+            let task = try? PersistenceServiceProvider.shared.getTaskById(
+                id: id
+            ),
+            let subtaskListViewController = makeTaskDetailController(task: task)
+        else {
+            return
+        }
+        tabBarController.selectedIndex = 0
+
+        navigationController.popToRootViewController(animated: false)
+        navigationController.pushViewController(
+            subtaskListViewController,
+            animated: true
+        )
+
+    }
+
+    private func decodeIdFromUrl(_ url: URL) -> UUID? {
+        guard url.scheme == "todo",
+            url.host == "task",
+            let idString = url.pathComponents.dropFirst().first,
+            let id = UUID(uuidString: idString)
+        else {
+            return nil
+        }
+
+        return id
+
+    }
+
+    func makeTaskDetailController(task: TodoTask) -> SubtaskListViewController?
+    {
+        guard
+            let controller = storyboard.instantiateViewController(
+                withIdentifier: "SubtaskListViewController"
+            ) as? SubtaskListViewController
+        else {
+            return nil
+        }
+
+        controller.persistenceService = PersistenceServiceProvider.shared
+        controller.task = task
+
+        return controller
     }
 
     func showLoading() {
@@ -77,6 +135,10 @@ final class AppCoordinator {
         )
 
         window.rootViewController = controller
+        if let url = pendingURL {
+            pendingURL = nil
+            openURL(url: url)
+        }
     }
 
     private func authorize(_ username: String, _ password: String) async {

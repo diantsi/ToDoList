@@ -11,7 +11,6 @@ final class SubtaskListViewController: UIViewController,
     UITableViewDataSource,
     UITableViewDelegate
 {
-
     @IBOutlet weak var navigationAddButton: UIBarButtonItem!
     
     @IBOutlet weak var subtasksTitleLabel: UILabel!
@@ -19,7 +18,7 @@ final class SubtaskListViewController: UIViewController,
     @IBOutlet private weak var notificationStackView: UIStackView!
     @IBOutlet private weak var notificationSwitch: UISwitch!
 
-    var persistenceService: any PersistenceService!
+    var persistenceService: (any PersistenceService)!
     var task: TodoTask!
     private var subtasks: [TodoSubtask] = []
 
@@ -75,6 +74,7 @@ final class SubtaskListViewController: UIViewController,
         notificationSwitch.isOn = task.needToNotify
         loadSubtasks()
     }
+
     private func loadSubtasks() {
         do {
             subtasks = try persistenceService.getSubtasks(
@@ -83,7 +83,8 @@ final class SubtaskListViewController: UIViewController,
 
             tableView.reloadData()
         } catch {
-            print("Failed to fetch subtasks: \(error.localizedDescription)")
+            showError(title: "Не можливо завантажити завдання", error)
+            return
         }
     }
 
@@ -95,7 +96,7 @@ final class SubtaskListViewController: UIViewController,
                 for: task.id
             )
         } catch {
-            showToggleError(error)
+            showError(title: "Не вдалося оновити завдання", error)
             return
         }
         if needToNotify {
@@ -160,7 +161,7 @@ final class SubtaskListViewController: UIViewController,
             )
         } catch {
             reloadSubtask(at: index)
-            showToggleError(error)
+            showError(title: "Не вдалося оновити завдання", error)
             return
         }
 
@@ -206,7 +207,7 @@ final class SubtaskListViewController: UIViewController,
                     : "Підзавдання позначено невиконаним"
             )
         } catch {
-            showToggleError(error)
+            showError(title: "Не вдалося оновити завдання", error)
         }
     }
 
@@ -219,9 +220,9 @@ final class SubtaskListViewController: UIViewController,
         )
     }
 
-    private func showToggleError(_ error: Error) {
+    private func showError(title: String,_ error: Error) {
         let alert = UIAlertController(
-            title: "Не вдалося оновити завдання",
+            title: title,
             message: error.localizedDescription,
             preferredStyle: .alert
         )
@@ -259,7 +260,7 @@ final class SubtaskListViewController: UIViewController,
             } catch NotificationError.notificationAccessDenied {
                 showNotificationAccessAlert()
             } catch {
-                showToggleError(error)
+                showError(title: "Не вдалося оновити завдання", error)
             }
         }
     }

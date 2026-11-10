@@ -19,8 +19,15 @@ struct PendingTasksView: View {
                     } label: {
                         Image(systemName: "square")
                     }
-                    Text(task.name)
-                    Text(task.dueDate.formatted())
+                    if let deepLink = task.deepLink {
+                        Link(destination: deepLink) {
+                            Text(task.name)
+                            Text(task.dueDate.formatted())
+                        }
+                    } else {
+                        Text(task.name)
+                        Text(task.dueDate.formatted())
+                    }
                 }
             }
         }

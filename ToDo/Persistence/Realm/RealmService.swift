@@ -9,6 +9,7 @@ import Realm
 import RealmSwift
 
 class RealmService: PersistenceService {
+    
 
     private let realm: Realm
 
@@ -31,6 +32,30 @@ class RealmService: PersistenceService {
                 ascending: true
             )
         return taskEntities.map(convertTask)
+    }
+    
+    func getPendingTasks(limit: Int) throws -> [TodoTask] {
+        var result: [RealmTask] = []
+        let taskEntities = realm.objects(RealmTask.self)
+            .filter("isDone == %@", false)
+            .sorted(
+                byKeyPath: "dueDate",
+                ascending: true
+            )
+        for i in (0...2) {
+            result[i] = taskEntities[i]
+        }
+        return result.map(convertTask)
+    }
+
+    func getTaskById(id: UUID) throws -> TodoTask {
+        guard let taskEntity = realm.objects(RealmTask.self)
+            .filter("id == %@", id)
+            .first
+                else {
+            throw PersistenceError.missingTaskID
+        }
+        return convertTask(realmTask: taskEntity)
     }
 
     private func convertTask(realmTask: RealmTask) -> TodoTask {
@@ -267,8 +292,5 @@ class RealmService: PersistenceService {
         )
     }
     
-    func getPendingTasks(limit: Int) throws -> [TodoTask] {
-        return []
-    }
-
+   
 }

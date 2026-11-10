@@ -44,4 +44,8 @@ struct TodoTask: ReminderItem, Codable, Identifiable {
             isHidden: true
         )
     }
+    
+    var deepLink: URL? {
+        URL(string: "todo://task/\(id)")
+    }
 }

@@ -24,9 +24,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let window else {
             return
         }
-
         coordinator = AppCoordinator(window: window)
+        guard let url = connectionOptions.urlContexts.first?.url else { return }
+        coordinator?.registerUrl(initialUrl: url)
         coordinator?.start()
+    }
+    
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        
+        guard let url = URLContexts.first?.url else { return }
+        coordinator?.openURL(url: url)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

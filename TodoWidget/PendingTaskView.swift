@@ -31,7 +31,7 @@ struct PendingTasksView: View {
         case .systemSmall:
             widgetStyle(fontSize: 13, taskNumber: 3)
         case .systemMedium:
-            widgetStyle(fontSize: 15, taskNumber: 4)
+            widgetStyle(fontSize: 15, taskNumber: 3)
         case .accessoryRectangular:
             widgetStyle(fontSize: 13, taskNumber: 1)
         default:
@@ -74,11 +74,25 @@ struct PendingTasksView: View {
         VStack(alignment: .leading, spacing: 2) {
             Text(task.name)
                 .font(.system(size: fontSize, weight: .medium))
-
-            Text(task.dueDate.formatted())
+            
+            deadlineLabel(task.dueDate, fontSize: fontSize)
+        }
+    }
+    
+    @ViewBuilder
+    private func deadlineLabel(_ dueDate: Date, fontSize: CGFloat) -> some View {
+        if dueDate <= Date() {
+            Text("Прострочено")
+                .font(.system(size: fontSize, weight: .medium))
+                .foregroundStyle(.red)
+                .accessibilityLabel("Завдання прострочено")
+        } else {
+            Text(dueDate.formatted())
                 .font(.system(size: fontSize, weight: .medium))
                 .foregroundStyle(.secondary)
-                .accessibilityLabel(task.dueDate.voiceOverFormatted)
+                .accessibilityLabel(
+                    "Термін виконання \(dueDate.voiceOverFormatted)"
+                )
         }
     }
 }

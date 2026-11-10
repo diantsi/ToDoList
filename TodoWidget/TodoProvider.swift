@@ -41,7 +41,17 @@ class TodoProvider: TimelineProvider {
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<TodoEntry>) -> Void) {
-         let entry = TodoEntry(date: Date(), tasks: dueTasks)
-        completion(Timeline(entries: [entry], policy: .never))
+        let curDate = Date()
+        let tasks = dueTasks
+        let entry = TodoEntry(date: curDate, tasks: dueTasks)
+        
+        let updateTime = tasks
+            .map(\.dueDate)
+            .filter { $0 > curDate }
+            .min()?
+            .addingTimeInterval(1)
+            ?? curDate.addingTimeInterval(6 * 60)
+        
+        completion(Timeline(entries: [entry], policy: .after(updateTime)))
     }
 }

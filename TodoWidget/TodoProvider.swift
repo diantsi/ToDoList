@@ -17,8 +17,7 @@ class TodoProvider: TimelineProvider {
     
     private var dueTasks : [TodoTask] {
         do {
-            //todo: write method for getting 3 pending task
-            return try persistenceService.getPendingTasks(limit: 3)
+            return try persistenceService.getPendingTasks(limit: 4)
         } catch {
             return []
         }
